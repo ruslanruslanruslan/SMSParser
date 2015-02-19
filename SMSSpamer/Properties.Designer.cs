@@ -26,12 +26,12 @@ namespace SMSSpamer {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string COMPortName {
+        public string ModemName {
             get {
-                return ((string)(this["COMPortName"]));
+                return ((string)(this["ModemName"]));
             }
             set {
-                this["COMPortName"] = value;
+                this["ModemName"] = value;
             }
         }
         

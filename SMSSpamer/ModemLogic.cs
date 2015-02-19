@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -28,14 +29,44 @@ namespace SMSSpamer
       set { _ConnectedPort = value; }
     }
 
+    private Dictionary<string, string> friendlyPorts;
+
+    public string GetPortNameByIndex(int index)
+    {
+      try
+      {
+        return _Ports[index];
+      }
+      catch
+      {
+        return String.Empty;
+      }
+    }
+
     public string[] LoadPorts()
     {
       try
       {
         _Ports = SerialPort.GetPortNames();
         Array.Sort(_Ports, StringComparer.InvariantCulture);
-        return _Ports;
 
+        friendlyPorts = BuildPortNameHash(_Ports);
+
+        List<string> Names = new List<string>();
+
+        foreach (string port in _Ports)
+        {
+          string name;
+          if (friendlyPorts.TryGetValue(port, out name))
+          {
+            Names.Add(name);
+          }
+          else
+          {
+            Names.Add(port);
+          }
+        }
+        return Names.ToArray();
       }
       catch (Exception ex)
       {
@@ -184,5 +215,52 @@ namespace SMSSpamer
       }
     }
 
+    private void MineRegistryForPortName(string startKeyPath, Dictionary<string, string> targetMap, string[] portsToMap)
+    {
+      if (targetMap.Count >= portsToMap.Length)
+        return;
+      using (RegistryKey currentKey = Registry.LocalMachine)
+      {
+        try
+        {
+          using (RegistryKey currentSubKey = currentKey.OpenSubKey(startKeyPath))
+          {
+            string[] currentSubkeys = currentSubKey.GetSubKeyNames();
+            if (currentSubkeys.Contains("Device Parameters") &&
+                startKeyPath != "SYSTEM\\CurrentControlSet\\Enum")
+            {
+              object portName = Registry.GetValue("HKEY_LOCAL_MACHINE\\" +
+                  startKeyPath + "\\Device Parameters", "PortName", null);
+              if (portName == null ||
+                  portsToMap.Contains(portName.ToString()) == false)
+                return;
+              object friendlyPortName = Registry.GetValue("HKEY_LOCAL_MACHINE\\" +
+                  startKeyPath, "FriendlyName", null);
+              string friendlyName = "N/A";
+              if (friendlyPortName != null)
+                friendlyName = friendlyPortName.ToString();
+              if (friendlyName.Contains(portName.ToString()) == false)
+                friendlyName = string.Format("{0} ({1})", friendlyName, portName);
+              targetMap[portName.ToString()] = friendlyName;
+            }
+            else
+            {
+              foreach (string strSubKey in currentSubkeys)
+                MineRegistryForPortName(startKeyPath + "\\" + strSubKey, targetMap, portsToMap);
+            }
+          }
+        }
+        catch (Exception)
+        {
+          Console.WriteLine("Error accessing key '{0}'.. Skipping..", startKeyPath);
+        }
+      }
+    }
+    private Dictionary<string, string> BuildPortNameHash(string[] portsToMap)
+    {
+      Dictionary<string, string> oReturnTable = new Dictionary<string, string>();
+      MineRegistryForPortName("SYSTEM\\CurrentControlSet\\Enum", oReturnTable, portsToMap);
+      return oReturnTable;
+    }
   }
 }

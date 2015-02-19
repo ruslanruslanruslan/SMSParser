@@ -49,7 +49,7 @@
       this.rtbLog.Location = new System.Drawing.Point(0, 0);
       this.rtbLog.Name = "rtbLog";
       this.rtbLog.ReadOnly = true;
-      this.rtbLog.Size = new System.Drawing.Size(494, 302);
+      this.rtbLog.Size = new System.Drawing.Size(375, 302);
       this.rtbLog.TabIndex = 0;
       this.rtbLog.Text = "";
       // 
@@ -65,7 +65,7 @@
       this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
       this.panel1.Location = new System.Drawing.Point(0, 0);
       this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(200, 302);
+      this.panel1.Size = new System.Drawing.Size(319, 302);
       this.panel1.TabIndex = 1;
       // 
       // btnSend
@@ -74,7 +74,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.btnSend.Location = new System.Drawing.Point(10, 231);
       this.btnSend.Name = "btnSend";
-      this.btnSend.Size = new System.Drawing.Size(184, 23);
+      this.btnSend.Size = new System.Drawing.Size(303, 23);
       this.btnSend.TabIndex = 6;
       this.btnSend.Text = "Send message";
       this.btnSend.UseVisualStyleBackColor = true;
@@ -88,7 +88,7 @@
       this.edtMessage.Multiline = true;
       this.edtMessage.Name = "edtMessage";
       this.edtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.edtMessage.Size = new System.Drawing.Size(184, 124);
+      this.edtMessage.Size = new System.Drawing.Size(303, 124);
       this.edtMessage.TabIndex = 5;
       // 
       // edtPhoneNumber
@@ -97,7 +97,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.edtPhoneNumber.Location = new System.Drawing.Point(10, 62);
       this.edtPhoneNumber.Name = "edtPhoneNumber";
-      this.edtPhoneNumber.Size = new System.Drawing.Size(184, 20);
+      this.edtPhoneNumber.Size = new System.Drawing.Size(303, 20);
       this.edtPhoneNumber.TabIndex = 4;
       // 
       // cbModem
@@ -108,7 +108,7 @@
       this.cbModem.FormattingEnabled = true;
       this.cbModem.Location = new System.Drawing.Point(10, 19);
       this.cbModem.Name = "cbModem";
-      this.cbModem.Size = new System.Drawing.Size(184, 21);
+      this.cbModem.Size = new System.Drawing.Size(303, 21);
       this.cbModem.TabIndex = 3;
       this.cbModem.SelectedIndexChanged += new System.EventHandler(this.cbModem_SelectedIndexChanged);
       // 
@@ -141,7 +141,7 @@
       // 
       // splitter1
       // 
-      this.splitter1.Location = new System.Drawing.Point(200, 0);
+      this.splitter1.Location = new System.Drawing.Point(319, 0);
       this.splitter1.Name = "splitter1";
       this.splitter1.Size = new System.Drawing.Size(3, 302);
       this.splitter1.TabIndex = 2;
@@ -151,9 +151,9 @@
       // 
       this.panel2.Controls.Add(this.rtbLog);
       this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.panel2.Location = new System.Drawing.Point(203, 0);
+      this.panel2.Location = new System.Drawing.Point(322, 0);
       this.panel2.Name = "panel2";
-      this.panel2.Size = new System.Drawing.Size(494, 302);
+      this.panel2.Size = new System.Drawing.Size(375, 302);
       this.panel2.TabIndex = 3;
       // 
       // frmMain

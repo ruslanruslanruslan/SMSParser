@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SMSSpamer" GeneratedClassName="Properties">
   <Profiles />
   <Settings>
-    <Setting Name="COMPortName" Type="System.String" Scope="User">
+    <Setting Name="ModemName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PhoneNumber" Type="System.String" Scope="User">

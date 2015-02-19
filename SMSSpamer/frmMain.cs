@@ -34,176 +34,6 @@ namespace SMSSpamer
       rtbLog.SelectionStart = rtbLog.Text.Length;
       rtbLog.ScrollToCaret();
     }
-    //static List<USBDeviceInfo> GetUSBDevices()
-    //{
-    //  List<USBDeviceInfo> devices = new List<USBDeviceInfo>();
-
-    //  ManagementObjectCollection collection;
-    //  using (var searcher = new ManagementObjectSearcher(@"Select * From Win32_USBHub"))
-    //    collection = searcher.Get();
-
-    //  foreach (var device in collection)
-    //  {
-    //    devices.Add(new USBDeviceInfo(
-    //    (string)device.GetPropertyValue("DeviceID"),
-    //    (string)device.GetPropertyValue("PNPDeviceID"),
-    //    (string)device.GetPropertyValue("Description"),
-    //    (string)device.GetPropertyValue("Caption"),
-    //    (string)device.GetPropertyValue("CreationClassName"),
-    //    (string)device.GetPropertyValue("Name"),
-    //    (string)device.GetPropertyValue("SystemCreationClassName"),
-    //    (string)device.GetPropertyValue("SystemName")
-    //    ));
-    //  }
-
-    //  collection.Dispose();
-    //  return devices;
-    //}
-
-    //class USBDeviceInfo
-    //{
-    //  public USBDeviceInfo(string deviceID, string pnpDeviceID, string description, string caption, string creationClassName, string name, string systemCreationClassName, string systemName)
-    //  {
-    //    this.DeviceID = deviceID;
-    //    this.PnpDeviceID = pnpDeviceID;
-    //    this.Description = description;
-    //    this.Caption = caption;
-    //    this.CreationClassName = creationClassName;
-    //    this.Name = name;
-    //    this.SystemCreationClassName = systemCreationClassName;
-    //    this.SystemName = systemName;
-    //  }
-    //  public string DeviceID { get; private set; }
-    //  public string PnpDeviceID { get; private set; }
-    //  public string Description { get; private set; }
-    //  public string Caption { get; private set; }
-    //  public string CreationClassName { get; private set; }
-    //  public string Name { get; private set; }
-    //  public string SystemCreationClassName { get; private set; }
-    //  public string SystemName { get; private set; }
-    //}
-    //private void FindModem()
-    //{
-    //  //ManagementScope scope = new ManagementScope();
-    //  //SelectQuery query = new SelectQuery("SELECT * FROM Win32_USBControllerDevice");
-    //  //ManagementObjectSearcher searcher = new ManagementObjectSearcher(scope, query);
-
-    //  //try
-    //  //{
-    //  //  foreach (ManagementObject item in searcher.Get())
-    //  //  {
-    //  //    String description = item["Description"].ToString();
-    //  //    String deviceID = item["DeviceID"].ToString();
-
-    //  //    AddLog("Porta " + description + " deviceID " + deviceID, Color.Black);
-
-    //  //    /*if (description.Contains("USB Serial Port"))
-    //  //      return deviceID;*/
-    //  //  }
-    //  //}
-    //  //catch (ManagementException)
-    //  //{
-    //  //}
-
-    //  //AddLog("Method 1", Color.Black);
-    //  //try
-    //  //{
-    //  //  ManagementObjectSearcher searcher =
-    //  //      new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_USBControllerDevice ");
-
-    //  //  foreach (ManagementObject queryObj in searcher.Get())
-    //  //  {
-    //  //    AddLog(queryObj["DeviceID"].ToString(), Color.Black);
-    //  //    AddLog(queryObj["Description"].ToString(), Color.Black);
-    //  //    AddLog(queryObj["Caption"].ToString(), Color.Black);
-    //  //    AddLog(queryObj["Name"].ToString(), Color.Black);
-    //  //    AddLog(queryObj["ProviderType"].ToString(), Color.Black);
-    //  //    AddLog(queryObj["SystemName"].ToString(), Color.Black);
-    //  //    AddLog(queryObj["SystemCreationClassName"].ToString(), Color.Black);
-    //  //  }
-    //  //}
-    //  //catch (ManagementException e)
-    //  //{
-    //  //  MessageBox.Show("An error occurred while querying for WMI data: " + e.Message);
-    //  //}
-    //  //AddLog("Method 2", Color.Black);
-    //  //var usbDevices = GetUSBDevices();
-
-    //  //foreach (var usbDevice in usbDevices)
-    //  //{
-    //  //  AddLog(String.Format("Device ID: {0}\n PNP Device ID: {1}\n Description: {2}\n Caption: {3}\n CreationClassName: {4}\n Name: {5}\n SystemCreationClassName: {6}\n SystemName: {7}\n SystemCreationClassName: {7}\n",
-    //  //    usbDevice.DeviceID, usbDevice.PnpDeviceID, usbDevice.Description, usbDevice.Caption, usbDevice.CreationClassName, usbDevice.Name, usbDevice.SystemCreationClassName, usbDevice.SystemName, usbDevice.SystemCreationClassName), Color.Black);
-    //  //}
-
-    //  Dictionary<string, string> friendlyPorts = BuildPortNameHash(SerialPort.GetPortNames());
-    //  foreach (KeyValuePair<string, string> kvp in friendlyPorts)
-    //  {
-    //    AddLog(String.Format("Port '{0}' is better known as '{1}'", kvp.Key, kvp.Value), Color.Black);
-    //  }
-
-    //}
-
-    //private void frmMain_Load(object sender, EventArgs e)
-    //{
-    //  FindModem();
-    //}
-
-    //static Dictionary<string, string> BuildPortNameHash(string[] portsToMap)
-    //{
-    //  Dictionary<string, string> oReturnTable = new Dictionary<string, string>();
-    //  MineRegistryForPortName("SYSTEM\\CurrentControlSet\\Enum", oReturnTable, portsToMap);
-    //  return oReturnTable;
-    //}
-    ///// <summary>
-    ///// Recursively enumerates registry subkeys starting with startKeyPath looking for 
-    ///// "Device Parameters" subkey. If key is present, friendly port name is extracted.
-    ///// </summary>
-    ///// <param name="startKeyPath">the start key from which to begin the enumeration</param>
-    ///// <param name="targetMap">dictionary that will get populated with 
-    ///// nonfriendly-to-friendly port names</param>
-    ///// <param name="portsToMap">array of port names (i.e. COM1, COM2, etc)</param>
-    //static void MineRegistryForPortName(string startKeyPath, Dictionary<string, string> targetMap,
-    //    string[] portsToMap)
-    //{
-    //  if (targetMap.Count >= portsToMap.Length)
-    //    return;
-    //  using (RegistryKey currentKey = Registry.LocalMachine)
-    //  {
-    //    try
-    //    {
-    //      using (RegistryKey currentSubKey = currentKey.OpenSubKey(startKeyPath))
-    //      {
-    //        string[] currentSubkeys = currentSubKey.GetSubKeyNames();
-    //        if (currentSubkeys.Contains("Device Parameters") &&
-    //            startKeyPath != "SYSTEM\\CurrentControlSet\\Enum")
-    //        {
-    //          object portName = Registry.GetValue("HKEY_LOCAL_MACHINE\\" +
-    //              startKeyPath + "\\Device Parameters", "PortName", null);
-    //          if (portName == null ||
-    //              portsToMap.Contains(portName.ToString()) == false)
-    //            return;
-    //          object friendlyPortName = Registry.GetValue("HKEY_LOCAL_MACHINE\\" +
-    //              startKeyPath, "FriendlyName", null);
-    //          string friendlyName = "N/A";
-    //          if (friendlyPortName != null)
-    //            friendlyName = friendlyPortName.ToString();
-    //          if (friendlyName.Contains(portName.ToString()) == false)
-    //            friendlyName = string.Format("{0} ({1})", friendlyName, portName);
-    //          targetMap[portName.ToString()] = friendlyName;
-    //        }
-    //        else
-    //        {
-    //          foreach (string strSubKey in currentSubkeys)
-    //            MineRegistryForPortName(startKeyPath + "\\" + strSubKey, targetMap, portsToMap);
-    //        }
-    //      }
-    //    }
-    //    catch (Exception)
-    //    {
-    //      Console.WriteLine("Error accessing key '{0}'.. Skipping..", startKeyPath);
-    //    }
-    //  }
-    //}
 
     private bool TryToConnectToModem(string strPortName)
     {
@@ -270,14 +100,14 @@ namespace SMSSpamer
       LoadPortNames();
       if (cbModem.Items.Count > 0)
       {
-        if (cbModem.Items.Contains(Properties.Default.COMPortName))
+        if (cbModem.Items.Contains(Properties.Default.ModemName))
         {
-          cbModem.SelectedIndex = cbModem.Items.IndexOf(Properties.Default.COMPortName);
+          cbModem.SelectedIndex = cbModem.Items.IndexOf(Properties.Default.ModemName);
         }
       }
       edtPhoneNumber.Text = Properties.Default.PhoneNumber;
       edtMessage.Text = Properties.Default.Message;
-      if (TryToConnectToModem(cbModem.Text))
+      if (TryToConnectToModem(modemLogic.GetPortNameByIndex(cbModem.SelectedIndex)))
       {
         btnSend.Enabled = true;
       }
@@ -298,7 +128,8 @@ namespace SMSSpamer
     }
     private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
     {
-      Properties.Default.COMPortName = cbModem.Text;
+      modemLogic.ClosePort();
+      Properties.Default.ModemName = cbModem.Text;
       Properties.Default.PhoneNumber = edtPhoneNumber.Text;
       Properties.Default.Message = edtMessage.Text;
       Properties.Default.Save();
@@ -307,7 +138,7 @@ namespace SMSSpamer
     private void cbModem_SelectedIndexChanged(object sender, EventArgs e)
     {
       btnSend.Enabled = false;
-      TryToConnectToModem(cbModem.Text);
+      TryToConnectToModem(modemLogic.GetPortNameByIndex(cbModem.SelectedIndex));
       btnSend.Enabled = true;
     }
 
