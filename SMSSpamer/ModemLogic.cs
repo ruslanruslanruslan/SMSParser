@@ -12,6 +12,8 @@ namespace SMSSpamer
   {
     public AutoResetEvent receiveNow;
 
+    private string _ConnectedPortName;
+
     private string[] _Ports;
     public string[] Ports
     {
@@ -43,6 +45,7 @@ namespace SMSSpamer
 
     public void OpenPort(string strPortName)
     {
+      _ConnectedPortName = strPortName;
       receiveNow = new AutoResetEvent(false);
       _ConnectedPort = new SerialPort();
       try
@@ -89,6 +92,10 @@ namespace SMSSpamer
       bool isSend = false;
       try
       {
+        if (_ConnectedPort == null)
+        {
+          OpenPort(_ConnectedPortName);
+        }
         string recievedData = ExecCommand("AT", 300);
         recievedData = ExecCommand("AT+CMGF=1", 300);
         String command = "AT+CMGS=\"" + PhoneNo + "\"";

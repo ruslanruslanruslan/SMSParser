@@ -277,14 +277,23 @@ namespace SMSSpamer
       }
       edtPhoneNumber.Text = Properties.Default.PhoneNumber;
       edtMessage.Text = Properties.Default.Message;
-      TryToConnectToModem(cbModem.Text);
+      if (TryToConnectToModem(cbModem.Text))
+      {
+        btnSend.Enabled = true;
+      }
       cbModem.SelectedIndexChanged += cbModem_SelectedIndexChanged;
-      if (Environment.GetCommandLineArgs().Count() > 1)
+      if (args.Count() > 1)
       {
         cbModem.Enabled = false;
         edtPhoneNumber.Enabled = false;
         edtMessage.Enabled = false;
         btnSend.Enabled = false;
+        if (args[1] == "--send-sms")
+        {
+          Text += " 'Send single SMS mode'";
+          AddLog("Send single SMS mode", LogMessageColor.Information());
+          TryAutoSendMessage(args[2], args[3]);
+        }
       }
     }
     private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -318,6 +327,7 @@ namespace SMSSpamer
     {
       try
       {
+        AddLog("Sending message '" + edtMessage.Text + "' to '" + edtPhoneNumber.Text, LogMessageColor.Information());
         return modemLogic.SendMessage(PhoneNo, Message);
       }
       catch (Exception ex)
@@ -327,9 +337,21 @@ namespace SMSSpamer
       return false;
     }
 
-    private void TryAutoSendMessage()
+    private void TryAutoSendMessage(string Phone, string Message)
     {
-      
+      if (!SendMessage(Phone, Message))
+      {
+        foreach(string port in modemLogic.Ports)
+        {
+          modemLogic.OpenPort(port);
+          if (SendMessage(Phone, Message))
+          {
+            Program.Exit(0);
+            return;
+          }
+        }
+      }
+      Program.Exit(1);
     }
 
   }

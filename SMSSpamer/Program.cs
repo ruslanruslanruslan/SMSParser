@@ -11,12 +11,23 @@ namespace SMSSpamer
     /// <summary>
     /// Главная точка входа для приложения.
     /// </summary>
+    /// 
+
+    private static int exitCode = 0; 
+
+    public static void Exit(int code)
+    {
+      exitCode = code;
+      Application.Exit();
+    }
+
     [STAThread]
-    static void Main()
+    static int Main()
     {
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
       Application.Run(new frmMain());
+      return exitCode;
     }
   }
 }
