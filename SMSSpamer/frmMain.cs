@@ -50,7 +50,7 @@ namespace SMSSpamer
         modemLogic.OpenPort(strPortName);
         if(modemLogic.ConnectedPort != null)
         {
-          AddLog("Device successfully connected", LogMessageColor.Information());
+          AddLog("Device successfully connected", LogMessageColor.Success());
           return true;
         }
       }
@@ -146,7 +146,7 @@ namespace SMSSpamer
     {
       if (SendMessage(edtPhoneNumber.Text, edtMessage.Text))
       {
-        AddLog("Message '" + edtMessage.Text + "' successfully sent to '" + edtPhoneNumber.Text + "'", LogMessageColor.Error());
+        AddLog("Message '" + edtMessage.Text + "' successfully sent to '" + edtPhoneNumber.Text + "'", LogMessageColor.Success());
       }
       else
       {
@@ -200,6 +200,10 @@ namespace SMSSpamer
     public static Color Error()
     {
       return Color.Red;
+    }
+    public static Color Success()
+    {
+      return Color.LimeGreen;
     }
   }
 }
