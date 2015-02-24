@@ -122,7 +122,11 @@ namespace SMSSpamer
         {
           Text += " 'Send single SMS mode'";
           AddLog("Send single SMS mode", LogMessageColor.Information());
-          TryAutoSendMessage(args[2], args[3]);
+          Task.Factory.StartNew(() =>
+            {
+              TryAutoSendMessage(args[2], args[3]);
+            }
+          );
         }
       }
     }
