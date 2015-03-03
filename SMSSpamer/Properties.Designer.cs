@@ -58,5 +58,65 @@ namespace SMSSpamer {
                 this["Message"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MySqlServerAddress {
+            get {
+                return ((string)(this["MySqlServerAddress"]));
+            }
+            set {
+                this["MySqlServerAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3306")]
+        public int MySqlServerPort {
+            get {
+                return ((int)(this["MySqlServerPort"]));
+            }
+            set {
+                this["MySqlServerPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MySqlServerDatabase {
+            get {
+                return ((string)(this["MySqlServerDatabase"]));
+            }
+            set {
+                this["MySqlServerDatabase"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MySqlServerUsername {
+            get {
+                return ((string)(this["MySqlServerUsername"]));
+            }
+            set {
+                this["MySqlServerUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MySqlServerPassword {
+            get {
+                return ((string)(this["MySqlServerPassword"]));
+            }
+            set {
+                this["MySqlServerPassword"] = value;
+            }
+        }
     }
 }

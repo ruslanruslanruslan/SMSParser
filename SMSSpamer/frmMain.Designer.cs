@@ -30,6 +30,8 @@
     {
       this.rtbLog = new System.Windows.Forms.RichTextBox();
       this.panel1 = new System.Windows.Forms.Panel();
+      this.btnSendFromDB = new System.Windows.Forms.Button();
+      this.btnSettings = new System.Windows.Forms.Button();
       this.btnSend = new System.Windows.Forms.Button();
       this.edtMessage = new System.Windows.Forms.TextBox();
       this.edtPhoneNumber = new System.Windows.Forms.TextBox();
@@ -55,6 +57,8 @@
       // 
       // panel1
       // 
+      this.panel1.Controls.Add(this.btnSendFromDB);
+      this.panel1.Controls.Add(this.btnSettings);
       this.panel1.Controls.Add(this.btnSend);
       this.panel1.Controls.Add(this.edtMessage);
       this.panel1.Controls.Add(this.edtPhoneNumber);
@@ -67,6 +71,28 @@
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(319, 302);
       this.panel1.TabIndex = 1;
+      // 
+      // btnSendFromDB
+      // 
+      this.btnSendFromDB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.btnSendFromDB.Location = new System.Drawing.Point(10, 276);
+      this.btnSendFromDB.Name = "btnSendFromDB";
+      this.btnSendFromDB.Size = new System.Drawing.Size(105, 23);
+      this.btnSendFromDB.TabIndex = 8;
+      this.btnSendFromDB.Text = "Send from DB";
+      this.btnSendFromDB.UseVisualStyleBackColor = true;
+      this.btnSendFromDB.Click += new System.EventHandler(this.btnSendFromDB_Click);
+      // 
+      // btnSettings
+      // 
+      this.btnSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnSettings.Location = new System.Drawing.Point(208, 276);
+      this.btnSettings.Name = "btnSettings";
+      this.btnSettings.Size = new System.Drawing.Size(105, 23);
+      this.btnSettings.TabIndex = 7;
+      this.btnSettings.Text = "Settings";
+      this.btnSettings.UseVisualStyleBackColor = true;
+      this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
       // 
       // btnSend
       // 
@@ -189,6 +215,8 @@
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.Button btnSettings;
+    private System.Windows.Forms.Button btnSendFromDB;
 
   }
 }
