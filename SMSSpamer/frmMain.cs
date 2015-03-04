@@ -274,7 +274,7 @@ namespace SMSSpamer
                 {
                   db.SetMessageSent(message.id);
                   Sent++;
-                  AddLog("Mark [" + message.id + "] as sent: '", LogMessageColor.Information());
+                  AddLog("Mark [" + message.id + "] as sent", LogMessageColor.Information());
                 }
                 catch (Exception ex)
                 {
