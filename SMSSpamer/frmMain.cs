@@ -225,7 +225,12 @@ namespace SMSSpamer
       try
       {
         AddLog("Sending message '" + Message + "' to '" + PhoneNo, LogMessageColor.Information());
-        return modemLogic.SendMessage(PhoneNo, Message);
+        string error = modemLogic.SendMessage(PhoneNo, Message);
+        if (error != null)
+        {
+          AddLog("Send message '" + Message + "' to '" + PhoneNo + " failed with error: " + error, LogMessageColor.Error());
+        }
+        return error == null;
       }
       catch (Exception ex)
       {
@@ -323,6 +328,7 @@ namespace SMSSpamer
             SendMessageFromDatabase(db);
             db.Close();
             bStopped = true;
+            bStop = false;
             btnSendFromDB.Text = "Send from DB";
             AddLog("Stopped", LogMessageColor.Information());
           }

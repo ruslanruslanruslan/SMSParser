@@ -118,9 +118,8 @@ namespace SMSSpamer
       }
     }
 
-    public bool SendMessage(string PhoneNo, string Message)
+    public string SendMessage(string PhoneNo, string Message)
     {
-      bool isSend = false;
       try
       {
         if (_ConnectedPort == null)
@@ -135,13 +134,12 @@ namespace SMSSpamer
         recievedData = ExecCommand(command, 3000); //3 seconds
         if (recievedData.EndsWith("\r\nOK\r\n"))
         {
-          isSend = true;
+          return null;
         }
-        else if (recievedData.Contains("ERROR"))
+        else
         {
-          isSend = false;
+          return recievedData;
         }
-        return isSend;
       }
       catch (Exception ex)
       {
@@ -161,7 +159,7 @@ namespace SMSSpamer
 
         string input = ReadResponse(responseTimeout);
         if ((input.Length == 0) || ((!input.EndsWith("\r\n> ")) && (!input.EndsWith("\r\nOK\r\n"))))
-          throw new Exception("No success message was received.");
+          throw new Exception("No success message was received. Modem responce is: " + input);
         return input;
       }
       catch (Exception ex)
