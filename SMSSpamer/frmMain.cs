@@ -216,7 +216,7 @@ namespace SMSSpamer
       }
       else
       {
-        AddLog("Can't send message '" + edtMessage.Text + "' to '" + edtPhoneNumber.Text, LogMessageColor.Error());
+        AddLog("Can't send message '" + edtMessage.Text + "' to '" + edtPhoneNumber.Text + "'", LogMessageColor.Error());
       }
     }
 
@@ -224,11 +224,11 @@ namespace SMSSpamer
     {
       try
       {
-        AddLog("Sending message '" + Message + "' to '" + PhoneNo, LogMessageColor.Information());
+        AddLog("Sending message '" + Message + "' to '" + PhoneNo + "'", LogMessageColor.Information());
         string error = modemLogic.SendMessage(PhoneNo, Message);
         if (error != null)
         {
-          AddLog("Send message '" + Message + "' to '" + PhoneNo + " failed with error: " + error, LogMessageColor.Error());
+          AddLog("Send message '" + Message + "' to '" + PhoneNo + "' failed with error: " + error, LogMessageColor.Error());
         }
         return error == null;
       }
