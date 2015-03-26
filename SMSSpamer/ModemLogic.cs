@@ -126,10 +126,10 @@ namespace SMSSpamer
         {
           OpenPort(_ConnectedPortName);
         }
-        string recievedData = ExecCommand("AT", 300);
-        recievedData = ExecCommand("AT+CMGF=1", 300);
+        string recievedData = ExecCommand("AT", 3000);
+        recievedData = ExecCommand("AT+CMGF=1", 3000);
         String command = "AT+CMGS=\"" + PhoneNo + "\"";
-        recievedData = ExecCommand(command, 300);
+        recievedData = ExecCommand(command, 3000);
         command = Message + char.ConvertFromUtf32(26) + "\r";
         recievedData = ExecCommand(command, 3000); //3 seconds
         if (recievedData.EndsWith("\r\nOK\r\n"))
