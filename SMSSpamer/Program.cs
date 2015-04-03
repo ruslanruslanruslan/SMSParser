@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -24,10 +25,18 @@ namespace SMSSpamer
     [STAThread]
     static int Main()
     {
-      Application.EnableVisualStyles();
-      Application.SetCompatibleTextRenderingDefault(false);
-      Application.Run(new frmMain());
-      return exitCode;
+      const string appGuid = "{FAB04460-1078-49DF-955F-511531648AD9}";
+      using (Mutex mutex = new Mutex(false, @"Global\" + appGuid))
+      {
+        if (mutex.WaitOne(0, false))
+        {
+          GC.Collect();
+          Application.EnableVisualStyles();
+          Application.SetCompatibleTextRenderingDefault(false);
+          Application.Run(new frmMain());
+        }
+        return exitCode;
+      }
     }
   }
 }

@@ -120,26 +120,53 @@ namespace SMSSpamer
 
     public string SendMessage(string PhoneNo, string Message)
     {
+      const string OK = "\r\nOK\r\n";
+      int timeout = 9000;
       try
       {
         if (_ConnectedPort == null)
         {
           OpenPort(_ConnectedPortName);
         }
-        string recievedData = ExecCommand("AT", 3000);
-        recievedData = ExecCommand("AT+CMGF=1", 3000);
-        String command = "AT+CMGS=\"" + PhoneNo + "\"";
-        recievedData = ExecCommand(command, 3000);
-        command = Message + char.ConvertFromUtf32(26) + "\r";
-        recievedData = ExecCommand(command, 3000); //3 seconds
-        if (recievedData.EndsWith("\r\nOK\r\n"))
+        string command;
+        command = "AT";
+        Console.WriteLine(command);
+        string receivedData = ExecCommand(command, timeout);
+        if (!receivedData.EndsWith(OK))
         {
-          return null;
+          throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
+        }
+        command = "AT+CMGF=0";
+        Console.WriteLine(command);
+        receivedData = ExecCommand(command, timeout);
+        if (!receivedData.EndsWith(OK))
+        {
+          throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
+        }
+        command = "AT+CMEE=1\r";
+        Console.WriteLine(command);
+        receivedData = ExecCommand(command, timeout);
+        if (!receivedData.EndsWith(OK))
+        {
+          throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
+        }
+        StringBuilder PDUMessage = new StringBuilder();
+        PDUMessage.Append("000100" + String.Format("{0:X2}", PhoneNo.Length + 1) + "91");
+        PDUMessage.Append(ConvertPhoneNumber(PhoneNo));
+        PDUMessage.Append("0008" + String.Format("{0:X2}", Message.Length * 2) + ConvertTextToUCS(Message));
+        command = "AT+CMGS=" + Convert.ToString((PDUMessage.Length / 2) - 1) + "\r";
+        Console.WriteLine(command);
+        receivedData = ExecCommand(command, timeout);
+        System.Threading.Thread.Sleep(9000);
+        command = PDUMessage.ToString() + Convert.ToChar(26);
+        Console.WriteLine(command);
+        receivedData = ExecCommand(command, timeout);
+        if (!receivedData.EndsWith(OK))
+        {
+          throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
         }
         else
-        {
-          return recievedData;
-        }
+          return null;
       }
       catch (Exception ex)
       {
@@ -183,7 +210,7 @@ namespace SMSSpamer
           else
           {
             if (buffer.Length > 0)
-              throw new Exception("Response received is incomplete.");
+              throw new Exception("Response received is incomplete. Received responce: '" + buffer + "'");
             else
               throw new Exception("No data received from phone.");
           }
@@ -259,6 +286,64 @@ namespace SMSSpamer
       Dictionary<string, string> oReturnTable = new Dictionary<string, string>();
       MineRegistryForPortName("SYSTEM\\CurrentControlSet\\Enum", oReturnTable, portsToMap);
       return oReturnTable;
+    }
+    String strAlphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщэюяABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'-* :;)(.,!=_ыЫъь+";
+    String[] ArrayUCSCode = new String[142]{            
+            "0410","0411","0412","0413","0414","0415","00A8","0416","0417",
+            "0418","0419","041A","041B","041C","041D","041E","041F","0420",
+            "0421","0422","0423","0424","0425","0426","0427","0428","0429",
+            "042C","042A","042D","042E","042F","0430","0431","0432","0433",
+            "0434","0435","00B8","0436","0437","0438","0439","043A","043B",
+            "043C","043D","043E","043F","0440","0441","0442","0443","0444",
+            "0445","0446","0447","0448","0449","044D","044E","044F","0041",
+            "0042","0043","0044","0045","0046","0047","0048","0049","004A",
+            "004B","004C","004D","004E","004F","0050","0051","0052","0053",
+            "0054","0055","0056","0057","0058","0059","005A","0061","0062",
+            "0063","0064","0065","0066","0067","0068","0069","006A","006B",
+            "006C","006D","006E","006F","0070","0071","0072","0073","0074",
+            "0075","0076","0077","0078","0079","007A","0030","0031","0032",
+            "0033","0034","0035","0036","0037","0038","0039","0027","002D",
+            "002A","0020","003A","003B","0029","0028","002E","002C","0021",
+            "003D","005F","044B","042B", "044A","044C","002B"};
+    private String ConvertTextToUCS(String InputText)
+    {
+      StringBuilder UCS = new StringBuilder(InputText.Length);
+      Int32 intLetterIndex = 0;
+      for (int i = 0; i < InputText.Length; i++)
+      {
+        intLetterIndex = strAlphabet.IndexOf(InputText[i]);
+        if (intLetterIndex != -1)
+        {
+          UCS.Append(ArrayUCSCode[intLetterIndex]);
+        }
+
+      }
+      return UCS.ToString();
+    }
+
+
+    private String ConvertPhoneNumber(String PhoneNumber)
+    {
+      StringBuilder NewNumber = new StringBuilder(PhoneNumber.Length);
+      if (PhoneNumber.Length / 2 == PhoneNumber.Length / 2.0) // число четное
+      {
+        for (int i = 0; i < PhoneNumber.Length / 2; i++)
+        {
+          NewNumber.Append(PhoneNumber[2 * i + 1].ToString());
+          NewNumber.Append(PhoneNumber[2 * i].ToString());
+        }
+      }
+      else // номер с нечетным кол-вом символом
+      {
+        for (int i = 0; i < PhoneNumber.Length / 2; i++)
+        {
+          NewNumber.Append(PhoneNumber[2 * i + 1].ToString());
+          NewNumber.Append(PhoneNumber[2 * i].ToString());
+        }
+        NewNumber.Append("F");
+        NewNumber.Append(PhoneNumber[PhoneNumber.Length - 1]);
+      }
+      return NewNumber.ToString();
     }
   }
 }
