@@ -19,6 +19,7 @@ namespace SMSSpamer
     public frmMain()
     {
       InitializeComponent();
+      modemLogic.AddModemLog = AddModemLog;
     }
 
     ModemLogic modemLogic = new ModemLogic();
@@ -35,6 +36,13 @@ namespace SMSSpamer
       rtbLog.SelectionColor = msgColor;
       rtbLog.SelectionStart = rtbLog.Text.Length;
       rtbLog.ScrollToCaret();
+    }
+
+    public void AddModemLog(string request, string responce)
+    {
+      rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Request: " + request + Environment.NewLine);
+      rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Responce: " + responce + Environment.NewLine);
+      rtbModemLog.ScrollToCaret();
     }
 
     private bool TryToConnectToModem(string strPortName)
@@ -340,6 +348,31 @@ namespace SMSSpamer
         AddLog("Stopping", LogMessageColor.Information());
       }
     }
+
+    private void btnSendCommand_Click(object sender, EventArgs e)
+    {
+      if (edtCommand.Text != String.Empty)
+      {
+        try
+        {
+          string data = modemLogic.ExecCommand(edtCommand.Text, 3000);
+          AddModemLog(edtCommand.Text, data);
+          edtCommand.Clear();
+        }
+        catch (Exception ex)
+        {
+          AddLog(ex.Message, LogMessageColor.Error());
+        }
+      }
+    }
+
+    private void edtCommand_KeyPress(object sender, KeyPressEventArgs e)
+    {
+      if (e.KeyChar == (char)Keys.Enter)
+      {
+        btnSendCommand_Click(sender, e);
+      }
+    }
   }
 
   class LogMessageColor
@@ -361,4 +394,6 @@ namespace SMSSpamer
       return Color.LimeGreen;
     }
   }
+
+  delegate void AddModemLogDelegate(string request, string responce);
 }

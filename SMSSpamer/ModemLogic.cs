@@ -11,6 +11,8 @@ namespace SMSSpamer
 {
   class ModemLogic
   {
+    public AddModemLogDelegate AddModemLog;
+
     public AutoResetEvent receiveNow;
 
     private string _ConnectedPortName;
@@ -132,6 +134,7 @@ namespace SMSSpamer
         command = "AT";
         Console.WriteLine(command);
         string receivedData = ExecCommand(command, timeout);
+        AddModemLog(command, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
@@ -139,6 +142,7 @@ namespace SMSSpamer
         command = "AT+CMGF=0";
         Console.WriteLine(command);
         receivedData = ExecCommand(command, timeout);
+        AddModemLog(command, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
@@ -146,6 +150,7 @@ namespace SMSSpamer
         command = "AT+CMEE=1\r";
         Console.WriteLine(command);
         receivedData = ExecCommand(command, timeout);
+        AddModemLog(command, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
@@ -157,10 +162,12 @@ namespace SMSSpamer
         command = "AT+CMGS=" + Convert.ToString((PDUMessage.Length / 2) - 1) + "\r";
         Console.WriteLine(command);
         receivedData = ExecCommand(command, timeout);
+        AddModemLog(command, receivedData);
         System.Threading.Thread.Sleep(9000);
         command = PDUMessage.ToString() + Convert.ToChar(26);
         Console.WriteLine(command);
         receivedData = ExecCommand(command, timeout);
+        AddModemLog(command, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");

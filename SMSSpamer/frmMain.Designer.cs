@@ -28,7 +28,6 @@
     /// </summary>
     private void InitializeComponent()
     {
-      this.rtbLog = new System.Windows.Forms.RichTextBox();
       this.panel1 = new System.Windows.Forms.Panel();
       this.btnSendFromDB = new System.Windows.Forms.Button();
       this.btnSettings = new System.Windows.Forms.Button();
@@ -41,19 +40,18 @@
       this.label1 = new System.Windows.Forms.Label();
       this.splitter1 = new System.Windows.Forms.Splitter();
       this.panel2 = new System.Windows.Forms.Panel();
+      this.rtbLog = new System.Windows.Forms.RichTextBox();
+      this.panel3 = new System.Windows.Forms.Panel();
+      this.panel4 = new System.Windows.Forms.Panel();
+      this.rtbModemLog = new System.Windows.Forms.RichTextBox();
+      this.edtCommand = new System.Windows.Forms.TextBox();
+      this.btnSendCommand = new System.Windows.Forms.Button();
+      this.splitter2 = new System.Windows.Forms.Splitter();
       this.panel1.SuspendLayout();
       this.panel2.SuspendLayout();
+      this.panel3.SuspendLayout();
+      this.panel4.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // rtbLog
-      // 
-      this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.rtbLog.Location = new System.Drawing.Point(0, 0);
-      this.rtbLog.Name = "rtbLog";
-      this.rtbLog.ReadOnly = true;
-      this.rtbLog.Size = new System.Drawing.Size(375, 302);
-      this.rtbLog.TabIndex = 0;
-      this.rtbLog.Text = "";
       // 
       // panel1
       // 
@@ -75,7 +73,7 @@
       // btnSendFromDB
       // 
       this.btnSendFromDB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.btnSendFromDB.Location = new System.Drawing.Point(10, 276);
+      this.btnSendFromDB.Location = new System.Drawing.Point(10, 273);
       this.btnSendFromDB.Name = "btnSendFromDB";
       this.btnSendFromDB.Size = new System.Drawing.Size(105, 23);
       this.btnSendFromDB.TabIndex = 8;
@@ -86,7 +84,7 @@
       // btnSettings
       // 
       this.btnSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnSettings.Location = new System.Drawing.Point(208, 276);
+      this.btnSettings.Location = new System.Drawing.Point(208, 273);
       this.btnSettings.Name = "btnSettings";
       this.btnSettings.Size = new System.Drawing.Size(105, 23);
       this.btnSettings.TabIndex = 7;
@@ -175,12 +173,85 @@
       // 
       // panel2
       // 
+      this.panel2.Controls.Add(this.splitter2);
       this.panel2.Controls.Add(this.rtbLog);
+      this.panel2.Controls.Add(this.panel3);
       this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
       this.panel2.Location = new System.Drawing.Point(322, 0);
       this.panel2.Name = "panel2";
       this.panel2.Size = new System.Drawing.Size(375, 302);
       this.panel2.TabIndex = 3;
+      // 
+      // rtbLog
+      // 
+      this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.rtbLog.Location = new System.Drawing.Point(0, 0);
+      this.rtbLog.Name = "rtbLog";
+      this.rtbLog.ReadOnly = true;
+      this.rtbLog.Size = new System.Drawing.Size(375, 202);
+      this.rtbLog.TabIndex = 0;
+      this.rtbLog.Text = "";
+      // 
+      // panel3
+      // 
+      this.panel3.Controls.Add(this.rtbModemLog);
+      this.panel3.Controls.Add(this.panel4);
+      this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.panel3.Location = new System.Drawing.Point(0, 202);
+      this.panel3.Name = "panel3";
+      this.panel3.Size = new System.Drawing.Size(375, 100);
+      this.panel3.TabIndex = 1;
+      // 
+      // panel4
+      // 
+      this.panel4.Controls.Add(this.btnSendCommand);
+      this.panel4.Controls.Add(this.edtCommand);
+      this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.panel4.Location = new System.Drawing.Point(0, 65);
+      this.panel4.Name = "panel4";
+      this.panel4.Size = new System.Drawing.Size(375, 35);
+      this.panel4.TabIndex = 0;
+      // 
+      // rtbModemLog
+      // 
+      this.rtbModemLog.BackColor = System.Drawing.SystemColors.ButtonFace;
+      this.rtbModemLog.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.rtbModemLog.Location = new System.Drawing.Point(0, 0);
+      this.rtbModemLog.Name = "rtbModemLog";
+      this.rtbModemLog.ReadOnly = true;
+      this.rtbModemLog.Size = new System.Drawing.Size(375, 65);
+      this.rtbModemLog.TabIndex = 1;
+      this.rtbModemLog.Text = "";
+      // 
+      // edtCommand
+      // 
+      this.edtCommand.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.edtCommand.Location = new System.Drawing.Point(3, 8);
+      this.edtCommand.Name = "edtCommand";
+      this.edtCommand.Size = new System.Drawing.Size(261, 20);
+      this.edtCommand.TabIndex = 0;
+      this.edtCommand.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edtCommand_KeyPress);
+      // 
+      // btnSendCommand
+      // 
+      this.btnSendCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnSendCommand.Location = new System.Drawing.Point(270, 6);
+      this.btnSendCommand.Name = "btnSendCommand";
+      this.btnSendCommand.Size = new System.Drawing.Size(102, 23);
+      this.btnSendCommand.TabIndex = 1;
+      this.btnSendCommand.Text = "Send command";
+      this.btnSendCommand.UseVisualStyleBackColor = true;
+      this.btnSendCommand.Click += new System.EventHandler(this.btnSendCommand_Click);
+      // 
+      // splitter2
+      // 
+      this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.splitter2.Location = new System.Drawing.Point(0, 199);
+      this.splitter2.Name = "splitter2";
+      this.splitter2.Size = new System.Drawing.Size(375, 3);
+      this.splitter2.TabIndex = 2;
+      this.splitter2.TabStop = false;
       // 
       // frmMain
       // 
@@ -198,13 +269,15 @@
       this.panel1.ResumeLayout(false);
       this.panel1.PerformLayout();
       this.panel2.ResumeLayout(false);
+      this.panel3.ResumeLayout(false);
+      this.panel4.ResumeLayout(false);
+      this.panel4.PerformLayout();
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    private System.Windows.Forms.RichTextBox rtbLog;
     private System.Windows.Forms.Panel panel1;
     private System.Windows.Forms.Splitter splitter1;
     private System.Windows.Forms.Panel panel2;
@@ -217,6 +290,13 @@
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Button btnSettings;
     private System.Windows.Forms.Button btnSendFromDB;
+    private System.Windows.Forms.Panel panel3;
+    private System.Windows.Forms.RichTextBox rtbModemLog;
+    private System.Windows.Forms.Panel panel4;
+    private System.Windows.Forms.Button btnSendCommand;
+    private System.Windows.Forms.TextBox edtCommand;
+    private System.Windows.Forms.RichTextBox rtbLog;
+    private System.Windows.Forms.Splitter splitter2;
 
   }
 }
