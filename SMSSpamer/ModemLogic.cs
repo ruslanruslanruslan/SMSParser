@@ -123,7 +123,7 @@ namespace SMSSpamer
     public string SendMessage(string PhoneNo, string Message)
     {
       const string OK = "\r\nOK\r\n";
-      int timeout = 9000;
+      int timeout = Properties.Default.TimeoutCommand * 1000;
       try
       {
         if (_ConnectedPort == null)
@@ -163,7 +163,7 @@ namespace SMSSpamer
         Console.WriteLine(command);
         receivedData = ExecCommand(command, timeout);
         AddModemLog(command, receivedData);
-        System.Threading.Thread.Sleep(9000);
+        System.Threading.Thread.Sleep(timeout);
         command = PDUMessage.ToString() + Convert.ToChar(26);
         Console.WriteLine(command);
         receivedData = ExecCommand(command, timeout);

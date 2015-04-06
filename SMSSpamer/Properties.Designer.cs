@@ -118,5 +118,41 @@ namespace SMSSpamer {
                 this["MySqlServerPassword"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("9")]
+        public int TimeoutCommand {
+            get {
+                return ((int)(this["TimeoutCommand"]));
+            }
+            set {
+                this["TimeoutCommand"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int TimeoutSMS {
+            get {
+                return ((int)(this["TimeoutSMS"]));
+            }
+            set {
+                this["TimeoutSMS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public int TimeoutBatch {
+            get {
+                return ((int)(this["TimeoutBatch"]));
+            }
+            set {
+                this["TimeoutBatch"] = value;
+            }
+        }
     }
 }

@@ -24,6 +24,9 @@ namespace SMSSpamer
       edtMySqlServerDatabase.Text = Properties.Default.MySqlServerDatabase;
       edtMySqlServerUsername.Text = Properties.Default.MySqlServerUsername;
       edtMySqlServerPassword.Text = Properties.Default.MySqlServerPassword;
+      edtTimeoutCommand.Text = Properties.Default.TimeoutCommand.ToString();
+      edtTimeoutSMS.Text = Properties.Default.TimeoutSMS.ToString();
+      edtTimeoutBatch.Text = Properties.Default.TimeoutBatch.ToString();
     }
 
     private void btnSave_Click(object sender, EventArgs e)
@@ -36,10 +39,46 @@ namespace SMSSpamer
         bNeedRestart = true;
       }
       Properties.Default.MySqlServerAddress = edtMySqlServerAddress.Text;
-      Properties.Default.MySqlServerPort = Convert.ToInt32(edtMySqlServerPort.Text);
+      try
+      {
+        Properties.Default.MySqlServerPort = Convert.ToInt32(edtMySqlServerPort.Text);
+      }
+      catch
+      {
+        MessageBox.Show("Can't save port number. Incorrect number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
       Properties.Default.MySqlServerDatabase = edtMySqlServerDatabase.Text;
       Properties.Default.MySqlServerUsername = edtMySqlServerUsername.Text;
       Properties.Default.MySqlServerPassword = edtMySqlServerPassword.Text;
+
+      try
+      {
+        Properties.Default.TimeoutCommand = Convert.ToInt32(edtTimeoutCommand.Text);
+      }
+      catch
+      {
+        MessageBox.Show("Can't save command timeout. Incorrect number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+      try
+      {
+        Properties.Default.TimeoutSMS = Convert.ToInt32(edtTimeoutSMS.Text);
+      }
+      catch
+      {
+        MessageBox.Show("Can't save timeout between SMS. Incorrect number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+      try
+      {
+        Properties.Default.TimeoutBatch = Convert.ToInt32(edtTimeoutBatch.Text);
+      }
+      catch
+      {
+        MessageBox.Show("Can't save timeout between batches. Incorrect number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
 
       Properties.Default.Save();
 

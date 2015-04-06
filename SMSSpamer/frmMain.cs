@@ -298,12 +298,19 @@ namespace SMSSpamer
             catch (Exception ex)
             {
               AddLog("Can't send message '" + message.message + "' to '" + message.number + "': " + ex.Message, LogMessageColor.Error());
-            }            
+            }
+            AddLog("Sleeping for " + Properties.Default.TimeoutSMS.ToString() + " sec", LogMessageColor.Information());
+            for (int i = 0; i < Properties.Default.TimeoutSMS; i++)
+            {
+              if (bStop)
+                return;
+              System.Threading.Thread.Sleep(1000);
+            }
           }
           if (Sent == 0)
           {
-            AddLog("Nothing sent. Sleeping for 60 sec", LogMessageColor.Error());
-            for (int i = 0; i < 60; i++)
+            AddLog("Nothing sent. Sleeping for " + Properties.Default.TimeoutBatch.ToString() + " sec", LogMessageColor.Error());
+            for (int i = 0; i < Properties.Default.TimeoutBatch; i++)
             {
               if (bStop)
                 return;
@@ -355,7 +362,7 @@ namespace SMSSpamer
       {
         try
         {
-          string data = modemLogic.ExecCommand(edtCommand.Text, 3000);
+          string data = modemLogic.ExecCommand(edtCommand.Text, Properties.Default.TimeoutCommand * 1000);
           AddModemLog(edtCommand.Text, data);
           edtCommand.Clear();
         }
