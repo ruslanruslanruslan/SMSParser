@@ -52,11 +52,19 @@
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
+      this.tabSMSLimit = new System.Windows.Forms.TabPage();
+      this.label4 = new System.Windows.Forms.Label();
+      this.label5 = new System.Windows.Forms.Label();
+      this.label11 = new System.Windows.Forms.Label();
+      this.lblLastSMSSent = new System.Windows.Forms.Label();
+      this.lblSMSSent = new System.Windows.Forms.Label();
+      this.edtSMSDayLimit = new System.Windows.Forms.TextBox();
       this.panel1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabMySql.SuspendLayout();
       this.panel2.SuspendLayout();
       this.tabTimeout.SuspendLayout();
+      this.tabSMSLimit.SuspendLayout();
       this.SuspendLayout();
       // 
       // panel1
@@ -72,6 +80,7 @@
       // 
       this.tabControl1.Controls.Add(this.tabMySql);
       this.tabControl1.Controls.Add(this.tabTimeout);
+      this.tabControl1.Controls.Add(this.tabSMSLimit);
       this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabControl1.Location = new System.Drawing.Point(0, 0);
       this.tabControl1.Name = "tabControl1";
@@ -306,6 +315,74 @@
       this.label3.TabIndex = 5;
       this.label3.Text = "Timeout between batches (s)";
       // 
+      // tabSMSLimit
+      // 
+      this.tabSMSLimit.Controls.Add(this.edtSMSDayLimit);
+      this.tabSMSLimit.Controls.Add(this.lblSMSSent);
+      this.tabSMSLimit.Controls.Add(this.lblLastSMSSent);
+      this.tabSMSLimit.Controls.Add(this.label11);
+      this.tabSMSLimit.Controls.Add(this.label5);
+      this.tabSMSLimit.Controls.Add(this.label4);
+      this.tabSMSLimit.Location = new System.Drawing.Point(4, 22);
+      this.tabSMSLimit.Name = "tabSMSLimit";
+      this.tabSMSLimit.Padding = new System.Windows.Forms.Padding(3);
+      this.tabSMSLimit.Size = new System.Drawing.Size(555, 235);
+      this.tabSMSLimit.TabIndex = 2;
+      this.tabSMSLimit.Text = "SMS Day Limit";
+      this.tabSMSLimit.UseVisualStyleBackColor = true;
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(8, 14);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(76, 13);
+      this.label4.TabIndex = 0;
+      this.label4.Text = "SMS Day Limit";
+      // 
+      // label5
+      // 
+      this.label5.AutoSize = true;
+      this.label5.Location = new System.Drawing.Point(8, 45);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(78, 13);
+      this.label5.TabIndex = 1;
+      this.label5.Text = "Last SMS Sent";
+      // 
+      // label11
+      // 
+      this.label11.AutoSize = true;
+      this.label11.Location = new System.Drawing.Point(8, 71);
+      this.label11.Name = "label11";
+      this.label11.Size = new System.Drawing.Size(55, 13);
+      this.label11.TabIndex = 2;
+      this.label11.Text = "SMS Sent";
+      // 
+      // lblLastSMSSent
+      // 
+      this.lblLastSMSSent.AutoSize = true;
+      this.lblLastSMSSent.Location = new System.Drawing.Point(92, 45);
+      this.lblLastSMSSent.Name = "lblLastSMSSent";
+      this.lblLastSMSSent.Size = new System.Drawing.Size(0, 13);
+      this.lblLastSMSSent.TabIndex = 3;
+      // 
+      // lblSMSSent
+      // 
+      this.lblSMSSent.AutoSize = true;
+      this.lblSMSSent.Location = new System.Drawing.Point(92, 71);
+      this.lblSMSSent.Name = "lblSMSSent";
+      this.lblSMSSent.Size = new System.Drawing.Size(0, 13);
+      this.lblSMSSent.TabIndex = 4;
+      // 
+      // edtSMSDayLimit
+      // 
+      this.edtSMSDayLimit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.edtSMSDayLimit.Location = new System.Drawing.Point(90, 11);
+      this.edtSMSDayLimit.Name = "edtSMSDayLimit";
+      this.edtSMSDayLimit.Size = new System.Drawing.Size(457, 20);
+      this.edtSMSDayLimit.TabIndex = 5;
+      // 
       // frmSettings
       // 
       this.AcceptButton = this.btnSave;
@@ -326,6 +403,8 @@
       this.panel2.ResumeLayout(false);
       this.tabTimeout.ResumeLayout(false);
       this.tabTimeout.PerformLayout();
+      this.tabSMSLimit.ResumeLayout(false);
+      this.tabSMSLimit.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -356,5 +435,12 @@
     private System.Windows.Forms.TextBox edtTimeoutBatch;
     private System.Windows.Forms.TextBox edtTimeoutSMS;
     private System.Windows.Forms.TextBox edtTimeoutCommand;
+    private System.Windows.Forms.TabPage tabSMSLimit;
+    private System.Windows.Forms.TextBox edtSMSDayLimit;
+    private System.Windows.Forms.Label lblSMSSent;
+    private System.Windows.Forms.Label lblLastSMSSent;
+    private System.Windows.Forms.Label label11;
+    private System.Windows.Forms.Label label5;
+    private System.Windows.Forms.Label label4;
   }
 }

@@ -27,6 +27,9 @@ namespace SMSSpamer
       edtTimeoutCommand.Text = Properties.Default.TimeoutCommand.ToString();
       edtTimeoutSMS.Text = Properties.Default.TimeoutSMS.ToString();
       edtTimeoutBatch.Text = Properties.Default.TimeoutBatch.ToString();
+      edtSMSDayLimit.Text = Properties.Default.DayLimitSMS.ToString();
+      lblLastSMSSent.Text = Properties.Default.LastSMSSent.ToShortDateString();
+      lblSMSSent.Text = Properties.Default.SMSSentToday.ToString();
     }
 
     private void btnSave_Click(object sender, EventArgs e)
@@ -79,6 +82,16 @@ namespace SMSSpamer
         MessageBox.Show("Can't save timeout between batches. Incorrect number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return;
       }
+      try
+      {
+        Properties.Default.DayLimitSMS = Convert.ToInt32(edtSMSDayLimit.Text);
+      }
+      catch
+      {
+        MessageBox.Show("Can't save SMS day limit. Incorrect number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+
 
       Properties.Default.Save();
 

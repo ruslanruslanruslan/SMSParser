@@ -154,5 +154,40 @@ namespace SMSSpamer {
                 this["TimeoutBatch"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int DayLimitSMS {
+            get {
+                return ((int)(this["DayLimitSMS"]));
+            }
+            set {
+                this["DayLimitSMS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SMSSentToday {
+            get {
+                return ((int)(this["SMSSentToday"]));
+            }
+            set {
+                this["SMSSentToday"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime LastSMSSent {
+            get {
+                return ((global::System.DateTime)(this["LastSMSSent"]));
+            }
+            set {
+                this["LastSMSSent"] = value;
+            }
+        }
     }
 }

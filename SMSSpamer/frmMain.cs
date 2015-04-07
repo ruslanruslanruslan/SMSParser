@@ -20,6 +20,12 @@ namespace SMSSpamer
     {
       InitializeComponent();
       modemLogic.AddModemLog = AddModemLog;
+      if ((DateTime.Now - Properties.Default.LastSMSSent).TotalDays >= 1)
+      {
+        Properties.Default.LastSMSSent = DateTime.Now;
+        Properties.Default.SMSSentToday = 0;
+        Properties.Default.Save();
+      }
     }
 
     ModemLogic modemLogic = new ModemLogic();
@@ -232,11 +238,22 @@ namespace SMSSpamer
     {
       try
       {
+        if (Properties.Default.SMSSentToday >= Properties.Default.DayLimitSMS)
+        {
+          AddLog("You reached day SMS Limit of " + Properties.Default.DayLimitSMS.ToString() + " SMS", LogMessageColor.Error());
+          return false;
+        }
         AddLog("Sending message '" + Message + "' to '" + PhoneNo + "'", LogMessageColor.Information());
         string error = modemLogic.SendMessage(PhoneNo, Message);
         if (error != null)
         {
           AddLog("Send message '" + Message + "' to '" + PhoneNo + "' failed with error: " + error, LogMessageColor.Error());
+          bStop = true;
+        }
+        else
+        {
+          Properties.Default.SMSSentToday += 1;
+          Properties.Default.Save();
         }
         return error == null;
       }
