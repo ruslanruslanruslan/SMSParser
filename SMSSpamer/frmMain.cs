@@ -19,6 +19,13 @@ namespace SMSSpamer
     public frmMain()
     {
       InitializeComponent();
+      modemLogic.AddModemLog = AddModemLog;
+      if ((DateTime.Now - Properties.Default.LastSMSSent).TotalDays >= 1)
+      {
+        Properties.Default.LastSMSSent = DateTime.Now;
+        Properties.Default.SMSSentToday = 0;
+        Properties.Default.Save();
+      }
     }
 
     ModemLogic modemLogic = new ModemLogic();
@@ -35,6 +42,13 @@ namespace SMSSpamer
       rtbLog.SelectionColor = msgColor;
       rtbLog.SelectionStart = rtbLog.Text.Length;
       rtbLog.ScrollToCaret();
+    }
+
+    public void AddModemLog(string request, string responce)
+    {
+      rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Request: " + request + Environment.NewLine);
+      rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Responce: " + responce + Environment.NewLine);
+      rtbModemLog.ScrollToCaret();
     }
 
     private bool TryToConnectToModem(string strPortName)
@@ -224,11 +238,22 @@ namespace SMSSpamer
     {
       try
       {
+        if (Properties.Default.SMSSentToday >= Properties.Default.DayLimitSMS)
+        {
+          AddLog("You reached day SMS Limit of " + Properties.Default.DayLimitSMS.ToString() + " SMS", LogMessageColor.Error());
+          return false;
+        }
         AddLog("Sending message '" + Message + "' to '" + PhoneNo + "'", LogMessageColor.Information());
         string error = modemLogic.SendMessage(PhoneNo, Message);
         if (error != null)
         {
           AddLog("Send message '" + Message + "' to '" + PhoneNo + "' failed with error: " + error, LogMessageColor.Error());
+          bStop = true;
+        }
+        else
+        {
+          Properties.Default.SMSSentToday += 1;
+          Properties.Default.Save();
         }
         return error == null;
       }
@@ -290,12 +315,19 @@ namespace SMSSpamer
             catch (Exception ex)
             {
               AddLog("Can't send message '" + message.message + "' to '" + message.number + "': " + ex.Message, LogMessageColor.Error());
-            }            
+            }
+            AddLog("Sleeping for " + Properties.Default.TimeoutSMS.ToString() + " sec", LogMessageColor.Information());
+            for (int i = 0; i < Properties.Default.TimeoutSMS; i++)
+            {
+              if (bStop)
+                return;
+              System.Threading.Thread.Sleep(1000);
+            }
           }
           if (Sent == 0)
           {
-            AddLog("Nothing sent. Sleeping for 60 sec", LogMessageColor.Error());
-            for (int i = 0; i < 60; i++)
+            AddLog("Nothing sent. Sleeping for " + Properties.Default.TimeoutBatch.ToString() + " sec", LogMessageColor.Error());
+            for (int i = 0; i < Properties.Default.TimeoutBatch; i++)
             {
               if (bStop)
                 return;
@@ -340,6 +372,31 @@ namespace SMSSpamer
         AddLog("Stopping", LogMessageColor.Information());
       }
     }
+
+    private void btnSendCommand_Click(object sender, EventArgs e)
+    {
+      if (edtCommand.Text != String.Empty)
+      {
+        try
+        {
+          string data = modemLogic.ExecCommand(edtCommand.Text, Properties.Default.TimeoutCommand * 1000);
+          AddModemLog(edtCommand.Text, data);
+          edtCommand.Clear();
+        }
+        catch (Exception ex)
+        {
+          AddLog(ex.Message, LogMessageColor.Error());
+        }
+      }
+    }
+
+    private void edtCommand_KeyPress(object sender, KeyPressEventArgs e)
+    {
+      if (e.KeyChar == (char)Keys.Enter)
+      {
+        btnSendCommand_Click(sender, e);
+      }
+    }
   }
 
   class LogMessageColor
@@ -361,4 +418,6 @@ namespace SMSSpamer
       return Color.LimeGreen;
     }
   }
+
+  delegate void AddModemLogDelegate(string request, string responce);
 }

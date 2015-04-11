@@ -118,5 +118,76 @@ namespace SMSSpamer {
                 this["MySqlServerPassword"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("9")]
+        public int TimeoutCommand {
+            get {
+                return ((int)(this["TimeoutCommand"]));
+            }
+            set {
+                this["TimeoutCommand"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int TimeoutSMS {
+            get {
+                return ((int)(this["TimeoutSMS"]));
+            }
+            set {
+                this["TimeoutSMS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public int TimeoutBatch {
+            get {
+                return ((int)(this["TimeoutBatch"]));
+            }
+            set {
+                this["TimeoutBatch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int DayLimitSMS {
+            get {
+                return ((int)(this["DayLimitSMS"]));
+            }
+            set {
+                this["DayLimitSMS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SMSSentToday {
+            get {
+                return ((int)(this["SMSSentToday"]));
+            }
+            set {
+                this["SMSSentToday"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime LastSMSSent {
+            get {
+                return ((global::System.DateTime)(this["LastSMSSent"]));
+            }
+            set {
+                this["LastSMSSent"] = value;
+            }
+        }
     }
 }

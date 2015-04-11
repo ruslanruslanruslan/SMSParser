@@ -29,7 +29,6 @@
     private void InitializeComponent()
     {
       this.panel1 = new System.Windows.Forms.Panel();
-      this.panel2 = new System.Windows.Forms.Panel();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabMySql = new System.Windows.Forms.TabPage();
       this.label14 = new System.Windows.Forms.Label();
@@ -43,12 +42,29 @@
       this.label8 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
       this.label6 = new System.Windows.Forms.Label();
+      this.panel2 = new System.Windows.Forms.Panel();
       this.btnCancel = new System.Windows.Forms.Button();
       this.btnSave = new System.Windows.Forms.Button();
+      this.tabTimeout = new System.Windows.Forms.TabPage();
+      this.edtTimeoutCommand = new System.Windows.Forms.TextBox();
+      this.edtTimeoutSMS = new System.Windows.Forms.TextBox();
+      this.edtTimeoutBatch = new System.Windows.Forms.TextBox();
+      this.label1 = new System.Windows.Forms.Label();
+      this.label2 = new System.Windows.Forms.Label();
+      this.label3 = new System.Windows.Forms.Label();
+      this.tabSMSLimit = new System.Windows.Forms.TabPage();
+      this.label4 = new System.Windows.Forms.Label();
+      this.label5 = new System.Windows.Forms.Label();
+      this.label11 = new System.Windows.Forms.Label();
+      this.lblLastSMSSent = new System.Windows.Forms.Label();
+      this.lblSMSSent = new System.Windows.Forms.Label();
+      this.edtSMSDayLimit = new System.Windows.Forms.TextBox();
       this.panel1.SuspendLayout();
-      this.panel2.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabMySql.SuspendLayout();
+      this.panel2.SuspendLayout();
+      this.tabTimeout.SuspendLayout();
+      this.tabSMSLimit.SuspendLayout();
       this.SuspendLayout();
       // 
       // panel1
@@ -60,19 +76,11 @@
       this.panel1.Size = new System.Drawing.Size(563, 261);
       this.panel1.TabIndex = 0;
       // 
-      // panel2
-      // 
-      this.panel2.Controls.Add(this.btnCancel);
-      this.panel2.Controls.Add(this.btnSave);
-      this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.panel2.Location = new System.Drawing.Point(0, 226);
-      this.panel2.Name = "panel2";
-      this.panel2.Size = new System.Drawing.Size(563, 35);
-      this.panel2.TabIndex = 1;
-      // 
       // tabControl1
       // 
       this.tabControl1.Controls.Add(this.tabMySql);
+      this.tabControl1.Controls.Add(this.tabTimeout);
+      this.tabControl1.Controls.Add(this.tabSMSLimit);
       this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabControl1.Location = new System.Drawing.Point(0, 0);
       this.tabControl1.Name = "tabControl1";
@@ -204,6 +212,16 @@
       this.label6.TabIndex = 11;
       this.label6.Text = "Server";
       // 
+      // panel2
+      // 
+      this.panel2.Controls.Add(this.btnCancel);
+      this.panel2.Controls.Add(this.btnSave);
+      this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.panel2.Location = new System.Drawing.Point(0, 226);
+      this.panel2.Name = "panel2";
+      this.panel2.Size = new System.Drawing.Size(563, 35);
+      this.panel2.TabIndex = 1;
+      // 
       // btnCancel
       // 
       this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -227,6 +245,144 @@
       this.btnSave.UseVisualStyleBackColor = true;
       this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
       // 
+      // tabTimeout
+      // 
+      this.tabTimeout.Controls.Add(this.label3);
+      this.tabTimeout.Controls.Add(this.label2);
+      this.tabTimeout.Controls.Add(this.label1);
+      this.tabTimeout.Controls.Add(this.edtTimeoutBatch);
+      this.tabTimeout.Controls.Add(this.edtTimeoutSMS);
+      this.tabTimeout.Controls.Add(this.edtTimeoutCommand);
+      this.tabTimeout.Location = new System.Drawing.Point(4, 22);
+      this.tabTimeout.Name = "tabTimeout";
+      this.tabTimeout.Padding = new System.Windows.Forms.Padding(3);
+      this.tabTimeout.Size = new System.Drawing.Size(555, 235);
+      this.tabTimeout.TabIndex = 1;
+      this.tabTimeout.Text = "Timeout";
+      this.tabTimeout.UseVisualStyleBackColor = true;
+      // 
+      // edtTimeoutCommand
+      // 
+      this.edtTimeoutCommand.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.edtTimeoutCommand.Location = new System.Drawing.Point(158, 10);
+      this.edtTimeoutCommand.Name = "edtTimeoutCommand";
+      this.edtTimeoutCommand.Size = new System.Drawing.Size(389, 20);
+      this.edtTimeoutCommand.TabIndex = 0;
+      // 
+      // edtTimeoutSMS
+      // 
+      this.edtTimeoutSMS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.edtTimeoutSMS.Location = new System.Drawing.Point(158, 36);
+      this.edtTimeoutSMS.Name = "edtTimeoutSMS";
+      this.edtTimeoutSMS.Size = new System.Drawing.Size(389, 20);
+      this.edtTimeoutSMS.TabIndex = 1;
+      // 
+      // edtTimeoutBatch
+      // 
+      this.edtTimeoutBatch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.edtTimeoutBatch.Location = new System.Drawing.Point(158, 62);
+      this.edtTimeoutBatch.Name = "edtTimeoutBatch";
+      this.edtTimeoutBatch.Size = new System.Drawing.Size(389, 20);
+      this.edtTimeoutBatch.TabIndex = 2;
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(8, 13);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(105, 13);
+      this.label1.TabIndex = 3;
+      this.label1.Text = "Command timeout (s)";
+      // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(8, 39);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(129, 13);
+      this.label2.TabIndex = 4;
+      this.label2.Text = "Timeout between SMS (s)";
+      // 
+      // label3
+      // 
+      this.label3.AutoSize = true;
+      this.label3.Location = new System.Drawing.Point(8, 65);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(144, 13);
+      this.label3.TabIndex = 5;
+      this.label3.Text = "Timeout between batches (s)";
+      // 
+      // tabSMSLimit
+      // 
+      this.tabSMSLimit.Controls.Add(this.edtSMSDayLimit);
+      this.tabSMSLimit.Controls.Add(this.lblSMSSent);
+      this.tabSMSLimit.Controls.Add(this.lblLastSMSSent);
+      this.tabSMSLimit.Controls.Add(this.label11);
+      this.tabSMSLimit.Controls.Add(this.label5);
+      this.tabSMSLimit.Controls.Add(this.label4);
+      this.tabSMSLimit.Location = new System.Drawing.Point(4, 22);
+      this.tabSMSLimit.Name = "tabSMSLimit";
+      this.tabSMSLimit.Padding = new System.Windows.Forms.Padding(3);
+      this.tabSMSLimit.Size = new System.Drawing.Size(555, 235);
+      this.tabSMSLimit.TabIndex = 2;
+      this.tabSMSLimit.Text = "SMS Day Limit";
+      this.tabSMSLimit.UseVisualStyleBackColor = true;
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(8, 14);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(76, 13);
+      this.label4.TabIndex = 0;
+      this.label4.Text = "SMS Day Limit";
+      // 
+      // label5
+      // 
+      this.label5.AutoSize = true;
+      this.label5.Location = new System.Drawing.Point(8, 45);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(78, 13);
+      this.label5.TabIndex = 1;
+      this.label5.Text = "Last SMS Sent";
+      // 
+      // label11
+      // 
+      this.label11.AutoSize = true;
+      this.label11.Location = new System.Drawing.Point(8, 71);
+      this.label11.Name = "label11";
+      this.label11.Size = new System.Drawing.Size(55, 13);
+      this.label11.TabIndex = 2;
+      this.label11.Text = "SMS Sent";
+      // 
+      // lblLastSMSSent
+      // 
+      this.lblLastSMSSent.AutoSize = true;
+      this.lblLastSMSSent.Location = new System.Drawing.Point(92, 45);
+      this.lblLastSMSSent.Name = "lblLastSMSSent";
+      this.lblLastSMSSent.Size = new System.Drawing.Size(0, 13);
+      this.lblLastSMSSent.TabIndex = 3;
+      // 
+      // lblSMSSent
+      // 
+      this.lblSMSSent.AutoSize = true;
+      this.lblSMSSent.Location = new System.Drawing.Point(92, 71);
+      this.lblSMSSent.Name = "lblSMSSent";
+      this.lblSMSSent.Size = new System.Drawing.Size(0, 13);
+      this.lblSMSSent.TabIndex = 4;
+      // 
+      // edtSMSDayLimit
+      // 
+      this.edtSMSDayLimit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.edtSMSDayLimit.Location = new System.Drawing.Point(90, 11);
+      this.edtSMSDayLimit.Name = "edtSMSDayLimit";
+      this.edtSMSDayLimit.Size = new System.Drawing.Size(457, 20);
+      this.edtSMSDayLimit.TabIndex = 5;
+      // 
       // frmSettings
       // 
       this.AcceptButton = this.btnSave;
@@ -241,10 +397,14 @@
       this.Text = "Settings";
       this.Load += new System.EventHandler(this.frmSettings_Load);
       this.panel1.ResumeLayout(false);
-      this.panel2.ResumeLayout(false);
       this.tabControl1.ResumeLayout(false);
       this.tabMySql.ResumeLayout(false);
       this.tabMySql.PerformLayout();
+      this.panel2.ResumeLayout(false);
+      this.tabTimeout.ResumeLayout(false);
+      this.tabTimeout.PerformLayout();
+      this.tabSMSLimit.ResumeLayout(false);
+      this.tabSMSLimit.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -268,5 +428,19 @@
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.Button btnCancel;
     private System.Windows.Forms.Button btnSave;
+    private System.Windows.Forms.TabPage tabTimeout;
+    private System.Windows.Forms.Label label3;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.TextBox edtTimeoutBatch;
+    private System.Windows.Forms.TextBox edtTimeoutSMS;
+    private System.Windows.Forms.TextBox edtTimeoutCommand;
+    private System.Windows.Forms.TabPage tabSMSLimit;
+    private System.Windows.Forms.TextBox edtSMSDayLimit;
+    private System.Windows.Forms.Label lblSMSSent;
+    private System.Windows.Forms.Label lblLastSMSSent;
+    private System.Windows.Forms.Label label11;
+    private System.Windows.Forms.Label label5;
+    private System.Windows.Forms.Label label4;
   }
 }
