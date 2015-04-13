@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SMSSpamer
 {
-  class ModemLogic
+  class ModemLogic : IDisposable
   {
     public AddModemLogDelegate AddModemLog;
 
@@ -139,7 +139,7 @@ namespace SMSSpamer
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
         }
-        command = "AT+CMGF=0";
+        command = "AT+CMEE=1\r";
         Console.WriteLine(command);
         receivedData = ExecCommand(command, timeout);
         AddModemLog(command, receivedData);
@@ -147,7 +147,7 @@ namespace SMSSpamer
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
         }
-        command = "AT+CMEE=1\r";
+        command = "AT+CMGF=0";
         Console.WriteLine(command);
         receivedData = ExecCommand(command, timeout);
         AddModemLog(command, receivedData);
@@ -175,9 +175,9 @@ namespace SMSSpamer
         else
           return null;
       }
-      catch (Exception ex)
+      catch
       {
-        throw ex;
+        throw;
       }
     }
 
@@ -196,9 +196,9 @@ namespace SMSSpamer
           throw new Exception("No success message was received. Modem responce is: " + input);
         return input;
       }
-      catch (Exception ex)
+      catch
       {
-        throw ex;
+        throw;
       }
     }
 
@@ -224,9 +224,9 @@ namespace SMSSpamer
         }
         while (!buffer.EndsWith("\r\nOK\r\n") && !buffer.EndsWith("\r\n> ") && !buffer.EndsWith("\r\nERROR\r\n"));
       }
-      catch (Exception ex)
+      catch
       {
-        throw ex;
+        throw;
       }
       return buffer;
     }
@@ -241,9 +241,9 @@ namespace SMSSpamer
           receiveNow.Set();
         }
       }
-      catch (Exception ex)
+      catch
       {
-        throw ex;
+        throw;
       }
     }
 
@@ -352,5 +352,24 @@ namespace SMSSpamer
       }
       return NewNumber.ToString();
     }
+
+    ~ModemLogic()
+    {
+      Dispose(false);
+    }
+
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+      ClosePort();
+      if (receiveNow != null)
+        receiveNow.Dispose();
+    }
+
   }
 }
