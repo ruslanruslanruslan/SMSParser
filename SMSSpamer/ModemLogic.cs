@@ -133,24 +133,27 @@ namespace SMSSpamer
         string command;
         command = "AT";
         Console.WriteLine(command);
+        AddModemLog(command, null);
         string receivedData = ExecCommand(command, timeout);
-        AddModemLog(command, receivedData);
+        AddModemLog(null, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
         }
         command = "AT+CMEE=1\r";
         Console.WriteLine(command);
+        AddModemLog(command, null);
         receivedData = ExecCommand(command, timeout);
-        AddModemLog(command, receivedData);
+        AddModemLog(null, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
         }
         command = "AT+CMGF=0";
         Console.WriteLine(command);
+        AddModemLog(command, null);
         receivedData = ExecCommand(command, timeout);
-        AddModemLog(command, receivedData);
+        AddModemLog(null, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
@@ -161,13 +164,14 @@ namespace SMSSpamer
         PDUMessage.Append("0008" + String.Format("{0:X2}", Message.Length * 2) + ConvertTextToUCS(Message));
         command = "AT+CMGS=" + Convert.ToString((PDUMessage.Length / 2) - 1) + "\r";
         Console.WriteLine(command);
+        AddModemLog(command, null);
         receivedData = ExecCommand(command, timeout);
-        AddModemLog(command, receivedData);
-        System.Threading.Thread.Sleep(timeout);
+        AddModemLog(null, receivedData);
         command = PDUMessage.ToString() + Convert.ToChar(26);
         Console.WriteLine(command);
+        AddModemLog(command, null);
         receivedData = ExecCommand(command, timeout);
-        AddModemLog(command, receivedData);
+        AddModemLog(null, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");

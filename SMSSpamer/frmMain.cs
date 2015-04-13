@@ -76,8 +76,14 @@ namespace SMSSpamer
         {
           lock (thislock)
           {
-            rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Request: " + request + Environment.NewLine);
-            rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Responce: " + responce + Environment.NewLine);
+            if (request != null)
+            {
+              rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Request: " + request + Environment.NewLine + Environment.NewLine);
+            }
+            if (responce != null)
+            {
+              rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Responce: " + responce + Environment.NewLine + Environment.NewLine);
+            }
             rtbModemLog.ScrollToCaret();
           }
         }
