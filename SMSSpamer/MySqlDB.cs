@@ -23,7 +23,7 @@ namespace SMSSpamer
     public string message { get; set; }
   }
 
-  class MySqlDB
+  class MySqlDB : IDisposable
   {
     private string m_Server;
     private int m_Port;
@@ -152,6 +152,20 @@ namespace SMSSpamer
         throw new Exception("MySql error: [" + sql + "] [id = " + id + "]: " + ex.Message, ex);
       }
     }
+    ~MySqlDB()
+    {
+      Dispose(false);
+    }
 
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+      Close();
+    }
   }
 }

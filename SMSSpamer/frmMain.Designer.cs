@@ -17,6 +17,8 @@
       {
         components.Dispose();
       }
+      if (modemLogic != null)
+        modemLogic.Dispose();
       base.Dispose(disposing);
     }
 

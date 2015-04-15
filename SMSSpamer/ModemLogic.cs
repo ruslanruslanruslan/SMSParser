@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SMSSpamer
 {
-  class ModemLogic
+  class ModemLogic : IDisposable
   {
     public AddModemLogDelegate AddModemLog;
 
@@ -133,24 +133,27 @@ namespace SMSSpamer
         string command;
         command = "AT";
         Console.WriteLine(command);
+        AddModemLog(command, null);
         string receivedData = ExecCommand(command, timeout);
-        AddModemLog(command, receivedData);
-        if (!receivedData.EndsWith(OK))
-        {
-          throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
-        }
-        command = "AT+CMGF=0";
-        Console.WriteLine(command);
-        receivedData = ExecCommand(command, timeout);
-        AddModemLog(command, receivedData);
+        AddModemLog(null, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
         }
         command = "AT+CMEE=1\r";
         Console.WriteLine(command);
+        AddModemLog(command, null);
         receivedData = ExecCommand(command, timeout);
-        AddModemLog(command, receivedData);
+        AddModemLog(null, receivedData);
+        if (!receivedData.EndsWith(OK))
+        {
+          throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
+        }
+        command = "AT+CMGF=0";
+        Console.WriteLine(command);
+        AddModemLog(command, null);
+        receivedData = ExecCommand(command, timeout);
+        AddModemLog(null, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
@@ -161,13 +164,14 @@ namespace SMSSpamer
         PDUMessage.Append("0008" + String.Format("{0:X2}", Message.Length * 2) + ConvertTextToUCS(Message));
         command = "AT+CMGS=" + Convert.ToString((PDUMessage.Length / 2) - 1) + "\r";
         Console.WriteLine(command);
+        AddModemLog(command, null);
         receivedData = ExecCommand(command, timeout);
-        AddModemLog(command, receivedData);
-        System.Threading.Thread.Sleep(timeout);
+        AddModemLog(null, receivedData);
         command = PDUMessage.ToString() + Convert.ToChar(26);
         Console.WriteLine(command);
+        AddModemLog(command, null);
         receivedData = ExecCommand(command, timeout);
-        AddModemLog(command, receivedData);
+        AddModemLog(null, receivedData);
         if (!receivedData.EndsWith(OK))
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
@@ -175,9 +179,9 @@ namespace SMSSpamer
         else
           return null;
       }
-      catch (Exception ex)
+      catch
       {
-        throw ex;
+        throw;
       }
     }
 
@@ -196,9 +200,9 @@ namespace SMSSpamer
           throw new Exception("No success message was received. Modem responce is: " + input);
         return input;
       }
-      catch (Exception ex)
+      catch
       {
-        throw ex;
+        throw;
       }
     }
 
@@ -224,9 +228,9 @@ namespace SMSSpamer
         }
         while (!buffer.EndsWith("\r\nOK\r\n") && !buffer.EndsWith("\r\n> ") && !buffer.EndsWith("\r\nERROR\r\n"));
       }
-      catch (Exception ex)
+      catch
       {
-        throw ex;
+        throw;
       }
       return buffer;
     }
@@ -241,9 +245,9 @@ namespace SMSSpamer
           receiveNow.Set();
         }
       }
-      catch (Exception ex)
+      catch
       {
-        throw ex;
+        throw;
       }
     }
 
@@ -352,5 +356,24 @@ namespace SMSSpamer
       }
       return NewNumber.ToString();
     }
+
+    ~ModemLogic()
+    {
+      Dispose(false);
+    }
+
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+      ClosePort();
+      if (receiveNow != null)
+        receiveNow.Dispose();
+    }
+
   }
 }

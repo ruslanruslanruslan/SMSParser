@@ -11,6 +11,7 @@ using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Extensions;
 
 namespace SMSSpamer
 {
@@ -19,6 +20,7 @@ namespace SMSSpamer
     public frmMain()
     {
       InitializeComponent();
+      System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = true;
       modemLogic.AddModemLog = AddModemLog;
       if ((DateTime.Now - Properties.Default.LastSMSSent).TotalDays >= 1)
       {
@@ -31,24 +33,65 @@ namespace SMSSpamer
     ModemLogic modemLogic = new ModemLogic();
     bool bStop = false;
     bool bStopped = true;
+    private Object thislock = new Object();
 
     private void AddLog(string msg, Color msgColor)
     {
-      int start = rtbLog.Text.Length - 1;
-      if (start < 0)
-        start = 0;
-      rtbLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + msg + Environment.NewLine);
-      rtbLog.Select(start, rtbLog.Text.Length - start + 1);
-      rtbLog.SelectionColor = msgColor;
-      rtbLog.SelectionStart = rtbLog.Text.Length;
-      rtbLog.ScrollToCaret();
+      if (rtbLog.InvokeRequired)
+      {
+        rtbLog.Invoke(new MethodInvoker(() => AddLog(msg, msgColor)));
+      }
+      else
+      {
+        try
+        {
+          lock (thislock)
+          {
+            int start = rtbLog.Text.Length - 1;
+            if (start < 0)
+              start = 0;
+            rtbLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + msg + Environment.NewLine);
+            rtbLog.Select(start, rtbLog.Text.Length - start + 1);
+            rtbLog.SelectionColor = msgColor;
+            rtbLog.SelectionStart = rtbLog.Text.Length;
+            rtbLog.ScrollToCaret();
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Error adding log", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
     }
 
     public void AddModemLog(string request, string responce)
     {
-      rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Request: " + request + Environment.NewLine);
-      rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Responce: " + responce + Environment.NewLine);
-      rtbModemLog.ScrollToCaret();
+      if (rtbModemLog.InvokeRequired)
+      {
+        rtbModemLog.Invoke(new MethodInvoker(() => AddModemLog(request, responce)));
+      }
+      else
+      {
+        try
+        {
+          lock (thislock)
+          {
+            if (request != null)
+            {
+              rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Request: " + request + Environment.NewLine + Environment.NewLine);
+            }
+            if (responce != null)
+            {
+              rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Responce: " + responce + Environment.NewLine + Environment.NewLine);
+            }
+            rtbModemLog.ScrollToCaret();
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Error adding modem log", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
     }
 
     private bool TryToConnectToModem(string strPortName)
@@ -356,12 +399,12 @@ namespace SMSSpamer
         Task.Factory.StartNew(() =>
           {
             bStopped = false;
-            btnSendFromDB.Text = "Stop";
+            btnSendFromDB.SetPropertyThreadSafe(() => btnSendFromDB.Text, "Stop");
             SendMessageFromDatabase(db);
             db.Close();
             bStopped = true;
             bStop = false;
-            btnSendFromDB.Text = "Send from DB";
+            btnSendFromDB.SetPropertyThreadSafe(() => btnSendFromDB.Text, "Send from DB");
             AddLog("Stopped", LogMessageColor.Information());
           }
         );
