@@ -123,6 +123,7 @@ namespace SMSSpamer
     public string SendMessage(string PhoneNo, string Message)
     {
       const string OK = "\r\nOK\r\n";
+      const int maxMessageLength = 70;
       int timeout = Properties.Default.TimeoutCommand * 1000;
       try
       {
@@ -158,26 +159,60 @@ namespace SMSSpamer
         {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
         }
-        StringBuilder PDUMessage = new StringBuilder();
-        PDUMessage.Append("000100" + String.Format("{0:X2}", PhoneNo.Length + 1) + "91");
-        PDUMessage.Append(ConvertPhoneNumber(PhoneNo));
-        PDUMessage.Append("0008" + String.Format("{0:X2}", Message.Length * 2) + ConvertTextToUCS(Message));
-        command = "AT+CMGS=" + Convert.ToString((PDUMessage.Length / 2) - 1) + "\r";
-        Console.WriteLine(command);
-        AddModemLog(command, null);
-        receivedData = ExecCommand(command, timeout);
-        AddModemLog(null, receivedData);
-        command = PDUMessage.ToString() + Convert.ToChar(26);
-        Console.WriteLine(command);
-        AddModemLog(command, null);
-        receivedData = ExecCommand(command, timeout);
-        AddModemLog(null, receivedData);
-        if (!receivedData.EndsWith(OK))
+        if (Message.Length <= maxMessageLength)
         {
-          throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
+          StringBuilder PDUMessage = new StringBuilder();
+          PDUMessage.Append("000100" + String.Format("{0:X2}", PhoneNo.Length + 1) + "91");
+          PDUMessage.Append(ConvertPhoneNumber(PhoneNo));
+          PDUMessage.Append("0008" + String.Format("{0:X2}", Message.Length * 2) + ConvertTextToUCS(Message));
+          command = "AT+CMGS=" + Convert.ToString((PDUMessage.Length / 2) - 1) + "\r";
+          Console.WriteLine(command);
+          AddModemLog(command, null);
+          receivedData = ExecCommand(command, timeout);
+          AddModemLog(null, receivedData);
+          command = PDUMessage.ToString() + Convert.ToChar(26);
+          Console.WriteLine(command);
+          AddModemLog(command, null);
+          receivedData = ExecCommand(command, timeout);
+          AddModemLog(null, receivedData);
+          if (!receivedData.EndsWith(OK))
+          {
+            throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
+          }
+          else
+            return null;
         }
         else
+        {
+          int partcount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Message.Length) / Convert.ToDouble(maxMessageLength)));
+          Console.WriteLine("Message.Length: " + Message.Length.ToString());
+          Console.WriteLine("partcount: " + partcount.ToString());
+          for (int part = 0; part < partcount; part++)
+          {
+            const int headerLength = 6;
+            StringBuilder PDUMessage = new StringBuilder();
+            PDUMessage.Append("004100" + String.Format("{0:X2}", PhoneNo.Length + 1) + "91");
+            PDUMessage.Append(ConvertPhoneNumber(PhoneNo));
+            int partLength = part < (partcount - 1) ? maxMessageLength : Message.Length - maxMessageLength * part;
+            string partMessage = Message.Substring(part * maxMessageLength, partLength);
+            PDUMessage.Append("0008" + String.Format("{0:X2}", partLength * 2 + headerLength) + "05000300" + String.Format("{0:X2}", partcount) + String.Format("{0:X2}", part + 1) + ConvertTextToUCS(partMessage));
+            command = "AT+CMGS=" + Convert.ToString((PDUMessage.Length / 2) - 1) + "\r";
+            Console.WriteLine(command);
+            AddModemLog(command, null);
+            receivedData = ExecCommand(command, timeout);
+            AddModemLog(null, receivedData);
+            command = PDUMessage.ToString() + Convert.ToChar(26);
+            Console.WriteLine(command);
+            AddModemLog(command, null);
+            receivedData = ExecCommand(command, timeout);
+            AddModemLog(null, receivedData);
+            if (!receivedData.EndsWith(OK))
+            {
+              throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
+            }
+          }
           return null;
+        }
       }
       catch
       {
