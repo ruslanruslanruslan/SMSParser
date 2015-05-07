@@ -106,9 +106,53 @@ namespace SMSSpamer
       }
     }
 
+    private List<string> GetMewMessagesId()
+    {
+      const string sql = "call sp_get_SMS_NextID;";
+      List<string> ids = new List<string>();
+      MySqlDataReader reader = null;
+      try
+      {
+        MySqlCommand cmd = new MySqlCommand(sql, mySqlConnection);
+        reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+          string id = reader.GetString(0);
+          ids.Add(id);
+        }
+      }
+      catch (Exception ex)
+      {
+        throw new Exception("MySql error: [" + sql + "] " + ex.Message, ex);
+      }
+      finally
+      {
+        if (reader != null)
+        {
+          reader.Close();
+        }
+      }
+      return ids;
+    }
+
+    private string ListToString(List <string> list)
+    {
+      string result = String.Empty;
+      foreach(string str in list)
+      {
+        if (result != String.Empty)
+          result += ", ";
+        result += str;
+      }
+      return result;
+    }
+
     public List<Message> GetMessagePacket()
     {
-      const string sql = "select pk_id, tel_num, message from fct_smsspamer where is_sent = 0;";
+      string ids = ListToString(GetMewMessagesId());
+      if (ids == String.Empty)
+        return new List<Message>();
+      string sql = "select pk_id, tel_num, message from fct_smsspamer where pk_id in (" + ids + ");";
       List<Message> messages = new List<Message>();
       MySqlDataReader reader = null;
       try
