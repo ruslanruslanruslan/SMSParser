@@ -440,6 +440,13 @@ namespace SMSSpamer
         btnSendCommand_Click(sender, e);
       }
     }
+
+    private void edtMessage_TextChanged(object sender, EventArgs e)
+    {
+      const int maxMessageLength = 70;
+      var smsCount = (edtMessage.Text.Length - 1) / maxMessageLength + 1;
+      lblMessageLength.Text = string.Format("{0}/{1} ({2})", edtMessage.Text.Length, smsCount == 0 ? maxMessageLength : maxMessageLength * smsCount, smsCount);
+    }
   }
 
   class LogMessageColor
