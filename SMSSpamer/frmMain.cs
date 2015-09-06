@@ -1,14 +1,6 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System;
 using System.Drawing;
-using System.IO;
-using System.IO.Ports;
 using System.Linq;
-using System.Management;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Extensions;
@@ -20,7 +12,7 @@ namespace SMSSpamer
     public frmMain()
     {
       InitializeComponent();
-      System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = true;
+      CheckForIllegalCrossThreadCalls = true;
       modemLogic.AddModemLog = AddModemLog;
       if ((DateTime.Now - Properties.Default.LastSMSSent).TotalDays >= 1)
       {
@@ -30,24 +22,22 @@ namespace SMSSpamer
       }
     }
 
-    ModemLogic modemLogic = new ModemLogic();
-    bool bStop = false;
-    bool bStopped = true;
-    private Object thislock = new Object();
+    private ModemLogic modemLogic = new ModemLogic();
+    private bool bStop = false;
+    private bool bStopped = true;
+    private object thislock = new object();
 
     private void AddLog(string msg, Color msgColor)
     {
       if (rtbLog.InvokeRequired)
-      {
         rtbLog.Invoke(new MethodInvoker(() => AddLog(msg, msgColor)));
-      }
       else
       {
         try
         {
           lock (thislock)
           {
-            int start = rtbLog.Text.Length - 1;
+            var start = rtbLog.Text.Length - 1;
             if (start < 0)
               start = 0;
             rtbLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + msg + Environment.NewLine);
@@ -67,9 +57,7 @@ namespace SMSSpamer
     public void AddModemLog(string request, string responce)
     {
       if (rtbModemLog.InvokeRequired)
-      {
         rtbModemLog.Invoke(new MethodInvoker(() => AddModemLog(request, responce)));
-      }
       else
       {
         try
@@ -77,13 +65,9 @@ namespace SMSSpamer
           lock (thislock)
           {
             if (request != null)
-            {
               rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Request: " + request + Environment.NewLine + Environment.NewLine);
-            }
             if (responce != null)
-            {
               rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Responce: " + responce + Environment.NewLine + Environment.NewLine);
-            }
             rtbModemLog.ScrollToCaret();
           }
         }
@@ -124,11 +108,8 @@ namespace SMSSpamer
     {
       try
       {
-        string[] ports = modemLogic.LoadPorts();
-        foreach (string port in ports)
-        {
+        foreach (var port in modemLogic.LoadPorts())
           cbModem.Items.Add(port);
-        }
       }
       catch (Exception ex)
       {
@@ -137,13 +118,9 @@ namespace SMSSpamer
       try
       {
         if (cbModem.Items.Count > 0)
-        {
           cbModem.SelectedIndex = 0;
-        }
         else
-        {
           AddLog("No avalable devices", LogMessageColor.Error());
-        }
       }
       catch (Exception ex)
       {
@@ -153,23 +130,18 @@ namespace SMSSpamer
 
     private void frmMain_Load(object sender, EventArgs e)
     {
-      string[] args = Environment.GetCommandLineArgs();
+      var args = Environment.GetCommandLineArgs();
       btnSend.Enabled = false;
       cbModem.SelectedIndexChanged -= cbModem_SelectedIndexChanged;
       LoadPortNames();
       if (cbModem.Items.Count > 0)
-      {
         if (cbModem.Items.Contains(Properties.Default.ModemName))
-        {
           cbModem.SelectedIndex = cbModem.Items.IndexOf(Properties.Default.ModemName);
-        }
-      }
+
       edtPhoneNumber.Text = Properties.Default.PhoneNumber;
       edtMessage.Text = Properties.Default.Message;
       if (TryToConnectToModem(modemLogic.GetPortNameByIndex(cbModem.SelectedIndex)))
-      {
         btnSend.Enabled = true;
-      }
       cbModem.SelectedIndexChanged += cbModem_SelectedIndexChanged;
       if (args.Count() > 1)
       {
@@ -194,31 +166,21 @@ namespace SMSSpamer
           Text += " 'Send SMS from DB mode'";
           AddLog("Send SMS from DB mode", LogMessageColor.Information());
           string server = "", login = "", password = "", database = "";
-          int port = 3306;
-          for (int i = 2; i < args.Count(); i += 2)
+          var port = 3306;
+          for (var i = 2; i < args.Count(); i += 2)
           {
             if (args[i] == "-server")
-            {
               server = args[i + 1];
-            }
             else if (args[i] == "-database")
-            {
               database = args[i + 1];
-            }
             else if (args[i] == "-login")
-            {
               login = args[i + 1];
-            }
             else if (args[i] == "-password")
-            {
               password = args[i + 1];
-            }
             else if (args[i] == "-port")
-            {
               port = Convert.ToInt32(args[i + 1]);
-            }
           }
-          MySqlDB db = new MySqlDB(login, password, server, port, database);
+          var db = new MySqlDB(login, password, server, port, database);
           try
           {
             var testConnection = db.mySqlConnection;
@@ -244,7 +206,7 @@ namespace SMSSpamer
             Properties.Default.MySqlServerPort == 0 ||
             Properties.Default.MySqlServerUsername.Length == 0)
         {
-          frmSettings frm = new frmSettings();
+          var frm = new frmSettings();
           frm.ShowDialog();
         }
       }
@@ -268,13 +230,9 @@ namespace SMSSpamer
     private void btnSend_Click(object sender, EventArgs e)
     {
       if (SendMessage(edtPhoneNumber.Text, edtMessage.Text))
-      {
         AddLog("Message '" + edtMessage.Text + "' successfully sent to '" + edtPhoneNumber.Text + "'", LogMessageColor.Success());
-      }
       else
-      {
         AddLog("Can't send message '" + edtMessage.Text + "' to '" + edtPhoneNumber.Text + "'", LogMessageColor.Error());
-      }
     }
 
     private bool SendMessage(string PhoneNo, string Message)
@@ -287,7 +245,7 @@ namespace SMSSpamer
           return false;
         }
         AddLog("Sending message '" + Message + "' to '" + PhoneNo + "'", LogMessageColor.Information());
-        string error = modemLogic.SendMessage(PhoneNo, Message);
+        var error = modemLogic.SendMessage(PhoneNo, Message);
         if (error != null)
         {
           AddLog("Send message '" + Message + "' to '" + PhoneNo + "' failed with error: " + error, LogMessageColor.Error());
@@ -311,7 +269,7 @@ namespace SMSSpamer
     {
       if (!SendMessage(Phone, Message))
       {
-        foreach (string port in modemLogic.Ports)
+        foreach (var port in modemLogic.Ports)
         {
           modemLogic.OpenPort(port);
           if (SendMessage(Phone, Message))
@@ -333,7 +291,7 @@ namespace SMSSpamer
         try
         {
           var messages = db.GetMessagePacket();
-          int Sent = 0;
+          var Sent = 0;
           foreach (var message in messages)
           {
             if (bStop)
@@ -360,7 +318,7 @@ namespace SMSSpamer
               AddLog("Can't send message '" + message.message + "' to '" + message.number + "': " + ex.Message, LogMessageColor.Error());
             }
             AddLog("Sleeping for " + Properties.Default.TimeoutSMS.ToString() + " sec", LogMessageColor.Information());
-            for (int i = 0; i < Properties.Default.TimeoutSMS; i++)
+            for (var i = 0; i < Properties.Default.TimeoutSMS; i++)
             {
               if (bStop)
                 return;
@@ -370,7 +328,7 @@ namespace SMSSpamer
           if (Sent == 0)
           {
             AddLog("Nothing sent. Sleeping for " + Properties.Default.TimeoutBatch.ToString() + " sec", LogMessageColor.Error());
-            for (int i = 0; i < Properties.Default.TimeoutBatch; i++)
+            for (var i = 0; i < Properties.Default.TimeoutBatch; i++)
             {
               if (bStop)
                 return;
@@ -387,7 +345,7 @@ namespace SMSSpamer
 
     private void btnSettings_Click(object sender, EventArgs e)
     {
-      frmSettings frm = new frmSettings();
+      var frm = new frmSettings();
       frm.ShowDialog();
     }
 
@@ -395,7 +353,7 @@ namespace SMSSpamer
     {
       if (bStopped)
       {
-        MySqlDB db = new MySqlDB(Properties.Default.MySqlServerUsername, Properties.Default.MySqlServerPassword, Properties.Default.MySqlServerAddress, Properties.Default.MySqlServerPort, Properties.Default.MySqlServerDatabase);
+        var db = new MySqlDB(Properties.Default.MySqlServerUsername, Properties.Default.MySqlServerPassword, Properties.Default.MySqlServerAddress, Properties.Default.MySqlServerPort, Properties.Default.MySqlServerDatabase);
         Task.Factory.StartNew(() =>
           {
             bStopped = false;
@@ -422,7 +380,7 @@ namespace SMSSpamer
       {
         try
         {
-          string data = modemLogic.ExecCommand(edtCommand.Text, Properties.Default.TimeoutCommand * 1000);
+          var data = modemLogic.ExecCommand(edtCommand.Text, Properties.Default.TimeoutCommand * 1000);
           AddModemLog(edtCommand.Text, data);
           edtCommand.Clear();
         }
@@ -436,9 +394,7 @@ namespace SMSSpamer
     private void edtCommand_KeyPress(object sender, KeyPressEventArgs e)
     {
       if (e.KeyChar == (char)Keys.Enter)
-      {
         btnSendCommand_Click(sender, e);
-      }
     }
 
     private void edtMessage_TextChanged(object sender, EventArgs e)

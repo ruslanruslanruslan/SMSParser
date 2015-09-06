@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SMSSpamer
 {
   static class Program
   {
-    /// <summary>
-    /// Главная точка входа для приложения.
-    /// </summary>
-    /// 
-
     private static int exitCode = 0; 
 
     public static void Exit(int code)
@@ -25,8 +17,7 @@ namespace SMSSpamer
     [STAThread]
     static int Main()
     {
-      const string appGuid = "{FAB04460-1078-49DF-955F-511531648AD9}";
-      using (Mutex mutex = new Mutex(false, @"Global\" + appGuid))
+      using (var mutex = new Mutex(false, @"Global\{FAB04460-1078-49DF-955F-511531648AD9}"))
       {
         if (mutex.WaitOne(0, false))
         {

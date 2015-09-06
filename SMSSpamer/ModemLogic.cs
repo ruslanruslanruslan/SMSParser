@@ -5,7 +5,6 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SMSSpamer
 {
@@ -17,18 +16,18 @@ namespace SMSSpamer
 
     private string _ConnectedPortName;
 
-    private string[] _Ports;
+    private string[] ports;
     public string[] Ports
     {
-      get { return _Ports; }
-      set { _Ports = value; }
+      get { return ports; }
+      set { ports = value; }
     }
 
-    private SerialPort _ConnectedPort;
+    private SerialPort connectedPort;
     public SerialPort ConnectedPort
     {
-      get { return _ConnectedPort; }
-      set { _ConnectedPort = value; }
+      get { return connectedPort; }
+      set { connectedPort = value; }
     }
 
     private Dictionary<string, string> friendlyPorts;
@@ -37,11 +36,11 @@ namespace SMSSpamer
     {
       try
       {
-        return _Ports[index];
+        return ports[index];
       }
       catch
       {
-        return String.Empty;
+        return string.Empty;
       }
     }
 
@@ -49,24 +48,20 @@ namespace SMSSpamer
     {
       try
       {
-        _Ports = SerialPort.GetPortNames();
-        Array.Sort(_Ports, StringComparer.InvariantCulture);
+        ports = SerialPort.GetPortNames();
+        Array.Sort(ports, StringComparer.InvariantCulture);
 
-        friendlyPorts = BuildPortNameHash(_Ports);
+        friendlyPorts = BuildPortNameHash(ports);
 
-        List<string> Names = new List<string>();
+        var Names = new List<string>();
 
-        foreach (string port in _Ports)
+        foreach (var port in ports)
         {
           string name;
           if (friendlyPorts.TryGetValue(port, out name))
-          {
             Names.Add(name);
-          }
           else
-          {
             Names.Add(port);
-          }
         }
         return Names.ToArray();
       }
@@ -80,21 +75,21 @@ namespace SMSSpamer
     {
       _ConnectedPortName = strPortName;
       receiveNow = new AutoResetEvent(false);
-      _ConnectedPort = new SerialPort();
+      connectedPort = new SerialPort();
       try
       {
-        _ConnectedPort.PortName = strPortName;
-        _ConnectedPort.BaudRate = 9600;
-        _ConnectedPort.DataBits = 8;
-        _ConnectedPort.StopBits = StopBits.One;
-        _ConnectedPort.Parity = Parity.None;
-        _ConnectedPort.ReadTimeout = 300;
-        _ConnectedPort.WriteTimeout = 300;
-        _ConnectedPort.Encoding = Encoding.GetEncoding("iso-8859-1");
-        _ConnectedPort.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);
-        _ConnectedPort.Open();
-        _ConnectedPort.DtrEnable = true;
-        _ConnectedPort.RtsEnable = true;
+        connectedPort.PortName = strPortName;
+        connectedPort.BaudRate = 9600;
+        connectedPort.DataBits = 8;
+        connectedPort.StopBits = StopBits.One;
+        connectedPort.Parity = Parity.None;
+        connectedPort.ReadTimeout = 300;
+        connectedPort.WriteTimeout = 300;
+        connectedPort.Encoding = Encoding.GetEncoding("iso-8859-1");
+        connectedPort.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);
+        connectedPort.Open();
+        connectedPort.DtrEnable = true;
+        connectedPort.RtsEnable = true;
       }
       catch (Exception ex)
       {
@@ -107,11 +102,11 @@ namespace SMSSpamer
     {
       try
       {
-        if (_ConnectedPort != null)
+        if (connectedPort != null)
         {
-          _ConnectedPort.Close();
-          _ConnectedPort.DataReceived -= new SerialDataReceivedEventHandler(port_DataReceived);
-          _ConnectedPort = null;
+          connectedPort.Close();
+          connectedPort.DataReceived -= new SerialDataReceivedEventHandler(port_DataReceived);
+          connectedPort = null;
         }
       }
       catch (Exception ex)
@@ -124,47 +119,42 @@ namespace SMSSpamer
     {
       const string OK = "\r\nOK\r\n";
       const int maxMessageLength = 70;
-      int timeout = Properties.Default.TimeoutCommand * 1000;
+      var timeout = Properties.Default.TimeoutCommand * 1000;
       try
       {
-        if (_ConnectedPort == null)
-        {
+        if (connectedPort == null)
           OpenPort(_ConnectedPortName);
-        }
-        string command;
-        command = "AT";
+
+        var command = "AT";
         Console.WriteLine(command);
         AddModemLog(command, null);
-        string receivedData = ExecCommand(command, timeout);
+        var receivedData = ExecCommand(command, timeout);
         AddModemLog(null, receivedData);
         if (!receivedData.EndsWith(OK))
-        {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
-        }
+
         command = "AT+CMEE=1\r";
         Console.WriteLine(command);
         AddModemLog(command, null);
         receivedData = ExecCommand(command, timeout);
         AddModemLog(null, receivedData);
         if (!receivedData.EndsWith(OK))
-        {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
-        }
+
         command = "AT+CMGF=0";
         Console.WriteLine(command);
         AddModemLog(command, null);
         receivedData = ExecCommand(command, timeout);
         AddModemLog(null, receivedData);
         if (!receivedData.EndsWith(OK))
-        {
           throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
-        }
+
         if (Message.Length <= maxMessageLength)
         {
-          StringBuilder PDUMessage = new StringBuilder();
-          PDUMessage.Append("000100" + String.Format("{0:X2}", PhoneNo.Length + 1) + "91");
+          var PDUMessage = new StringBuilder();
+          PDUMessage.Append("000100" + string.Format("{0:X2}", PhoneNo.Length + 1) + "91");
           PDUMessage.Append(ConvertPhoneNumber(PhoneNo));
-          PDUMessage.Append("0008" + String.Format("{0:X2}", Message.Length * 2) + ConvertTextToUCS(Message));
+          PDUMessage.Append("0008" + string.Format("{0:X2}", Message.Length * 2) + ConvertTextToUCS(Message));
           command = "AT+CMGS=" + Convert.ToString((PDUMessage.Length / 2) - 1) + "\r";
           Console.WriteLine(command);
           AddModemLog(command, null);
@@ -176,26 +166,24 @@ namespace SMSSpamer
           receivedData = ExecCommand(command, timeout);
           AddModemLog(null, receivedData);
           if (!receivedData.EndsWith(OK))
-          {
             throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
-          }
           else
             return null;
         }
         else
         {
-          int partcount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Message.Length) / Convert.ToDouble(maxMessageLength)));
+          var partcount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Message.Length) / Convert.ToDouble(maxMessageLength)));
           Console.WriteLine("Message.Length: " + Message.Length.ToString());
           Console.WriteLine("partcount: " + partcount.ToString());
-          for (int part = 0; part < partcount; part++)
+          for (var part = 0; part < partcount; part++)
           {
             const int headerLength = 6;
-            StringBuilder PDUMessage = new StringBuilder();
-            PDUMessage.Append("004100" + String.Format("{0:X2}", PhoneNo.Length + 1) + "91");
+            var PDUMessage = new StringBuilder();
+            PDUMessage.Append("004100" + string.Format("{0:X2}", PhoneNo.Length + 1) + "91");
             PDUMessage.Append(ConvertPhoneNumber(PhoneNo));
-            int partLength = part < (partcount - 1) ? maxMessageLength : Message.Length - maxMessageLength * part;
-            string partMessage = Message.Substring(part * maxMessageLength, partLength);
-            PDUMessage.Append("0008" + String.Format("{0:X2}", partLength * 2 + headerLength) + "05000300" + String.Format("{0:X2}", partcount) + String.Format("{0:X2}", part + 1) + ConvertTextToUCS(partMessage));
+            var partLength = part < (partcount - 1) ? maxMessageLength : Message.Length - maxMessageLength * part;
+            var partMessage = Message.Substring(part * maxMessageLength, partLength);
+            PDUMessage.Append("0008" + string.Format("{0:X2}", partLength * 2 + headerLength) + "05000300" + String.Format("{0:X2}", partcount) + String.Format("{0:X2}", part + 1) + ConvertTextToUCS(partMessage));
             command = "AT+CMGS=" + Convert.ToString((PDUMessage.Length / 2) - 1) + "\r";
             Console.WriteLine(command);
             AddModemLog(command, null);
@@ -207,9 +195,7 @@ namespace SMSSpamer
             receivedData = ExecCommand(command, timeout);
             AddModemLog(null, receivedData);
             if (!receivedData.EndsWith(OK))
-            {
               throw new Exception("Request: '" + command + "' Responce: '" + receivedData + "'");
-            }
           }
           return null;
         }
@@ -225,12 +211,12 @@ namespace SMSSpamer
     {
       try
       {
-        _ConnectedPort.DiscardOutBuffer();
-        _ConnectedPort.DiscardInBuffer();
+        connectedPort.DiscardOutBuffer();
+        connectedPort.DiscardInBuffer();
         receiveNow.Reset();
-        _ConnectedPort.Write(command + "\r");
+        connectedPort.Write(command + "\r");
 
-        string input = ReadResponse(responseTimeout);
+        var input = ReadResponse(responseTimeout);
         if ((input.Length == 0) || ((!input.EndsWith("\r\n> ")) && (!input.EndsWith("\r\nOK\r\n"))))
           throw new Exception("No success message was received. Modem responce is: " + input);
         return input;
@@ -243,14 +229,14 @@ namespace SMSSpamer
 
     public string ReadResponse(int timeout)
     {
-      string buffer = string.Empty;
+      var buffer = string.Empty;
       try
       {
         do
         {
           if (receiveNow.WaitOne(timeout, false))
           {
-            string t = _ConnectedPort.ReadExisting();
+            var t = connectedPort.ReadExisting();
             buffer += t;
           }
           else
@@ -276,9 +262,7 @@ namespace SMSSpamer
       try
       {
         if (e.EventType == SerialData.Chars)
-        {
           receiveNow.Set();
-        }
       }
       catch
       {
@@ -290,24 +274,22 @@ namespace SMSSpamer
     {
       if (targetMap.Count >= portsToMap.Length)
         return;
-      using (RegistryKey currentKey = Registry.LocalMachine)
+      using (var currentKey = Registry.LocalMachine)
       {
         try
         {
-          using (RegistryKey currentSubKey = currentKey.OpenSubKey(startKeyPath))
+          using (var currentSubKey = currentKey.OpenSubKey(startKeyPath))
           {
-            string[] currentSubkeys = currentSubKey.GetSubKeyNames();
+            var currentSubkeys = currentSubKey.GetSubKeyNames();
             if (currentSubkeys.Contains("Device Parameters") &&
                 startKeyPath != "SYSTEM\\CurrentControlSet\\Enum")
             {
-              object portName = Registry.GetValue("HKEY_LOCAL_MACHINE\\" +
+              var portName = Registry.GetValue("HKEY_LOCAL_MACHINE\\" +
                   startKeyPath + "\\Device Parameters", "PortName", null);
-              if (portName == null ||
-                  portsToMap.Contains(portName.ToString()) == false)
+              if (portName == null || portsToMap.Contains(portName.ToString()) == false)
                 return;
-              object friendlyPortName = Registry.GetValue("HKEY_LOCAL_MACHINE\\" +
-                  startKeyPath, "FriendlyName", null);
-              string friendlyName = "N/A";
+              var friendlyPortName = Registry.GetValue("HKEY_LOCAL_MACHINE\\" + startKeyPath, "FriendlyName", null);
+              var friendlyName = "N/A";
               if (friendlyPortName != null)
                 friendlyName = friendlyPortName.ToString();
               if (friendlyName.Contains(portName.ToString()) == false)
@@ -333,8 +315,9 @@ namespace SMSSpamer
       MineRegistryForPortName("SYSTEM\\CurrentControlSet\\Enum", oReturnTable, portsToMap);
       return oReturnTable;
     }
-    String strAlphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщэюяABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'-* :;)(.,!=_ыЫъь+";
-    String[] ArrayUCSCode = new String[142]{            
+
+    private const string strAlphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщэюяABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'-* :;)(.,!=_ыЫъь+";
+    private string[] ArrayUCSCode = new string[142]{            
             "0410","0411","0412","0413","0414","0415","00A8","0416","0417",
             "0418","0419","041A","041B","041C","041D","041E","041F","0420",
             "0421","0422","0423","0424","0425","0426","0427","0428","0429",
@@ -351,29 +334,26 @@ namespace SMSSpamer
             "0033","0034","0035","0036","0037","0038","0039","0027","002D",
             "002A","0020","003A","003B","0029","0028","002E","002C","0021",
             "003D","005F","044B","042B", "044A","044C","002B"};
-    private String ConvertTextToUCS(String InputText)
+
+    private string ConvertTextToUCS(string InputText)
     {
-      StringBuilder UCS = new StringBuilder(InputText.Length);
-      Int32 intLetterIndex = 0;
-      for (int i = 0; i < InputText.Length; i++)
+      var UCS = new StringBuilder(InputText.Length);
+      var intLetterIndex = 0;
+      for (var i = 0; i < InputText.Length; i++)
       {
         intLetterIndex = strAlphabet.IndexOf(InputText[i]);
         if (intLetterIndex != -1)
-        {
           UCS.Append(ArrayUCSCode[intLetterIndex]);
-        }
-
       }
       return UCS.ToString();
     }
 
-
-    private String ConvertPhoneNumber(String PhoneNumber)
+    private string ConvertPhoneNumber(string PhoneNumber)
     {
-      StringBuilder NewNumber = new StringBuilder(PhoneNumber.Length);
+      var NewNumber = new StringBuilder(PhoneNumber.Length);
       if (PhoneNumber.Length / 2 == PhoneNumber.Length / 2.0) // число четное
       {
-        for (int i = 0; i < PhoneNumber.Length / 2; i++)
+        for (var i = 0; i < PhoneNumber.Length / 2; i++)
         {
           NewNumber.Append(PhoneNumber[2 * i + 1].ToString());
           NewNumber.Append(PhoneNumber[2 * i].ToString());
@@ -381,7 +361,7 @@ namespace SMSSpamer
       }
       else // номер с нечетным кол-вом символом
       {
-        for (int i = 0; i < PhoneNumber.Length / 2; i++)
+        for (var i = 0; i < PhoneNumber.Length / 2; i++)
         {
           NewNumber.Append(PhoneNumber[2 * i + 1].ToString());
           NewNumber.Append(PhoneNumber[2 * i].ToString());

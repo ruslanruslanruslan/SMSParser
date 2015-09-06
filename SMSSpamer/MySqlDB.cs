@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data;
 using MySql.Data.MySqlClient;
 
 namespace SMSSpamer
@@ -78,9 +74,7 @@ namespace SMSSpamer
     public void Close()
     {
       if (m_mySqlConnection != null)
-      {
         m_mySqlConnection.Close();
-      }
     }
 
     public MySqlConnection mySqlConnection
@@ -88,9 +82,7 @@ namespace SMSSpamer
       get
       {
         if (m_mySqlConnection == null)
-        {
           m_mySqlConnection = new MySqlConnection(ConnectionString);
-        }
         if (m_mySqlConnection.State == System.Data.ConnectionState.Broken || m_mySqlConnection.State == System.Data.ConnectionState.Closed)
         {
           try
@@ -109,17 +101,13 @@ namespace SMSSpamer
     private List<string> GetMewMessagesId()
     {
       const string sql = "call sp_get_SMS_NextID;";
-      List<string> ids = new List<string>();
+      var ids = new List<string>();
       MySqlDataReader reader = null;
       try
       {
-        MySqlCommand cmd = new MySqlCommand(sql, mySqlConnection);
-        reader = cmd.ExecuteReader();
+        reader = new MySqlCommand(sql, mySqlConnection).ExecuteReader();
         while (reader.Read())
-        {
-          string id = reader.GetString(0);
-          ids.Add(id);
-        }
+          ids.Add(reader.GetString(0));
       }
       catch (Exception ex)
       {
@@ -128,19 +116,17 @@ namespace SMSSpamer
       finally
       {
         if (reader != null)
-        {
           reader.Close();
-        }
       }
       return ids;
     }
 
     private string ListToString(List <string> list)
     {
-      string result = String.Empty;
-      foreach(string str in list)
+      var result = string.Empty;
+      foreach(var str in list)
       {
-        if (result != String.Empty)
+        if (result != string.Empty)
           result += ", ";
         result += str;
       }
@@ -149,23 +135,17 @@ namespace SMSSpamer
 
     public List<Message> GetMessagePacket()
     {
-      string ids = ListToString(GetMewMessagesId());
-      if (ids == String.Empty)
+      var ids = ListToString(GetMewMessagesId());
+      if (ids == string.Empty)
         return new List<Message>();
-      string sql = "select pk_id, tel_num, message from fct_smsspamer where pk_id in (" + ids + ");";
-      List<Message> messages = new List<Message>();
+      var sql = "select pk_id, tel_num, message from fct_smsspamer where pk_id in (" + ids + ");";
+      var messages = new List<Message>();
       MySqlDataReader reader = null;
       try
       {
-        MySqlCommand cmd = new MySqlCommand(sql, mySqlConnection);
-        reader = cmd.ExecuteReader();
+        reader = new MySqlCommand(sql, mySqlConnection).ExecuteReader();
         while (reader.Read())
-        {
-          string id = reader.GetString(0);
-          string number = reader.GetString(1);
-          string message = reader.GetString(2);
-          messages.Add(new Message(id, number, message));
-        }
+          messages.Add(new Message(reader.GetString(0), reader.GetString(1), reader.GetString(2)));
       }
       catch (Exception ex)
       {
@@ -174,9 +154,7 @@ namespace SMSSpamer
       finally
       {
         if (reader != null)
-        {
           reader.Close();
-        }
       }
       return messages;
     }
@@ -186,7 +164,7 @@ namespace SMSSpamer
       const string sql = "call sp_set_SMS_sent(@id);";
       try
       {
-        MySqlCommand cmd = new MySqlCommand(sql, mySqlConnection);
+        var cmd = new MySqlCommand(sql, mySqlConnection);
         cmd.Prepare();
         cmd.Parameters.AddWithValue("@id", id);
         cmd.ExecuteNonQuery();
@@ -196,6 +174,7 @@ namespace SMSSpamer
         throw new Exception("MySql error: [" + sql + "] [id = " + id + "]: " + ex.Message, ex);
       }
     }
+
     ~MySqlDB()
     {
       Dispose(false);
