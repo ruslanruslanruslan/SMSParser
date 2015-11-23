@@ -121,6 +121,35 @@ namespace SMSSpamer
       return ids;
     }
 
+    public string GetSMSLeft()
+    {
+        const string sql = "select fn_check_sms_IsAllowedForSending(null);";
+        List<string> ids = new List<string>();
+        MySqlDataReader reader = null;
+        try
+        {
+            MySqlCommand cmd = new MySqlCommand(sql, mySqlConnection);
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                string id = reader.GetString(0);
+                ids.Add(id);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("MySql error: [" + sql + "] " + ex.Message, ex);
+        }
+        finally
+        {
+            if (reader != null)
+            {
+                reader.Close();
+            }
+        }
+        return ListToString(ids);
+    }
+
     private string ListToString(List <string> list)
     {
       var result = string.Empty;
