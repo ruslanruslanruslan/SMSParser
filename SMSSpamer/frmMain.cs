@@ -267,7 +267,8 @@ namespace SMSSpamer
 
     private void btnSend_Click(object sender, EventArgs e)
     {
-      if (SendMessage(edtPhoneNumber.Text, edtMessage.Text))
+      MySqlDB db = new MySqlDB(Properties.Default.MySqlServerUsername, Properties.Default.MySqlServerPassword, Properties.Default.MySqlServerAddress, Properties.Default.MySqlServerPort, Properties.Default.MySqlServerDatabase);
+      if (SendMessage(edtPhoneNumber.Text, edtMessage.Text, db))
       {
         AddLog("Message '" + edtMessage.Text + "' successfully sent to '" + edtPhoneNumber.Text + "'", LogMessageColor.Success());
       }
@@ -277,14 +278,21 @@ namespace SMSSpamer
       }
     }
 
-    private bool SendMessage(string PhoneNo, string Message)
+    private bool SendMessage(string PhoneNo, string Message, MySqlDB db)
     {
       try
       {
+        var limitSMS = db.GetSMSLeft();
         if (Properties.Default.SMSSentToday >= Properties.Default.DayLimitSMS)
         {
           AddLog("You reached day SMS Limit of " + Properties.Default.DayLimitSMS.ToString() + " SMS", LogMessageColor.Error());
           return false;
+        }
+        AddLog("Database SMS left: " + limitSMS, LogMessageColor.Information());
+        if (Convert.ToInt32(limitSMS) <= 0)
+        {
+            AddLog("You reached database SMS Limit of SMS", LogMessageColor.Error());
+            return false;
         }
         AddLog("Sending message '" + Message + "' to '" + PhoneNo + "'", LogMessageColor.Information());
         string error = modemLogic.SendMessage(PhoneNo, Message);
@@ -309,12 +317,13 @@ namespace SMSSpamer
 
     private void TryAutoSendMessage(string Phone, string Message)
     {
-      if (!SendMessage(Phone, Message))
+      MySqlDB db = new MySqlDB(Properties.Default.MySqlServerUsername, Properties.Default.MySqlServerPassword, Properties.Default.MySqlServerAddress, Properties.Default.MySqlServerPort, Properties.Default.MySqlServerDatabase);
+      if (!SendMessage(Phone, Message, db))
       {
         foreach (string port in modemLogic.Ports)
         {
           modemLogic.OpenPort(port);
-          if (SendMessage(Phone, Message))
+          if (SendMessage(Phone, Message, db))
           {
             Program.Exit(0);
             return;
@@ -340,7 +349,7 @@ namespace SMSSpamer
               return;
             try
             {
-              if (SendMessage(message.number, message.message))
+              if (SendMessage(message.number, message.message, db))
               {
                 AddLog("Success", LogMessageColor.Success());
                 try
