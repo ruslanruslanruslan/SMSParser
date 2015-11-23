@@ -121,39 +121,33 @@ namespace SMSSpamer
       return ids;
     }
 
-    public string GetSMSLeft()
+    public int GetSMSLeft()
     {
-        const string sql = "select fn_check_sms_IsAllowedForSending(null);";
-        List<string> ids = new List<string>();
-        MySqlDataReader reader = null;
-        try
-        {
-            MySqlCommand cmd = new MySqlCommand(sql, mySqlConnection);
-            reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                string id = reader.GetString(0);
-                ids.Add(id);
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("MySql error: [" + sql + "] " + ex.Message, ex);
-        }
-        finally
-        {
-            if (reader != null)
-            {
-                reader.Close();
-            }
-        }
-        return ListToString(ids);
+      const string sql = "select fn_check_sms_IsAllowedForSending(null);";
+      int count = 0;
+      MySqlDataReader reader = null;
+      try
+      {
+        var cmd = new MySqlCommand(sql, mySqlConnection);
+        reader = cmd.ExecuteReader();
+        count = Convert.ToInt32(reader.GetString(0));
+      }
+      catch (Exception ex)
+      {
+        throw new Exception("MySql error: [" + sql + "] " + ex.Message, ex);
+      }
+      finally
+      {
+        if (reader != null)
+          reader.Close();
+      }
+      return count;
     }
 
-    private string ListToString(List <string> list)
+    private string ListToString(List<string> list)
     {
       var result = string.Empty;
-      foreach(var str in list)
+      foreach (var str in list)
       {
         if (result != string.Empty)
           result += ", ";

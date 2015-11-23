@@ -20,12 +20,15 @@ namespace SMSSpamer
         Properties.Default.SMSSentToday = 0;
         Properties.Default.Save();
       }
+      db = new MySqlDB(Properties.Default.MySqlServerUsername, Properties.Default.MySqlServerPassword, 
+        Properties.Default.MySqlServerAddress, Properties.Default.MySqlServerPort, Properties.Default.MySqlServerDatabase);
     }
 
     private ModemLogic modemLogic = new ModemLogic();
     private bool bStop = false;
     private bool bStopped = true;
     private object thislock = new object();
+    private MySqlDB db = null;
 
     private void AddLog(string msg, Color msgColor)
     {
@@ -180,7 +183,7 @@ namespace SMSSpamer
             else if (args[i] == "-port")
               port = Convert.ToInt32(args[i + 1]);
           }
-          var db = new MySqlDB(login, password, server, port, database);
+          db = new MySqlDB(login, password, server, port, database);
           try
           {
             var testConnection = db.mySqlConnection;
@@ -229,25 +232,24 @@ namespace SMSSpamer
 
     private void btnSend_Click(object sender, EventArgs e)
     {
-      MySqlDB db = new MySqlDB(Properties.Default.MySqlServerUsername, Properties.Default.MySqlServerPassword, Properties.Default.MySqlServerAddress, Properties.Default.MySqlServerPort, Properties.Default.MySqlServerDatabase);
-      if (SendMessage(edtPhoneNumber.Text, edtMessage.Text, db))
+      if (SendMessage(edtPhoneNumber.Text, edtMessage.Text))
         AddLog("Message '" + edtMessage.Text + "' successfully sent to '" + edtPhoneNumber.Text + "'", LogMessageColor.Success());
       else
         AddLog("Can't send message '" + edtMessage.Text + "' to '" + edtPhoneNumber.Text + "'", LogMessageColor.Error());
     }
 
-    private bool SendMessage(string PhoneNo, string Message, MySqlDB db)
+    private bool SendMessage(string PhoneNo, string Message)
     {
       try
       {
         var limitSMS = db.GetSMSLeft();
-        if (Properties.Default.SMSSentToday >= Properties.Default.DayLimitSMS)
-        {
-          AddLog("You reached day SMS Limit of " + Properties.Default.DayLimitSMS.ToString() + " SMS", LogMessageColor.Error());
-          return false;
-        }
+        //if (Properties.Default.SMSSentToday >= Properties.Default.DayLimitSMS)
+        //{
+        //  AddLog("You reached day SMS Limit of " + Properties.Default.DayLimitSMS.ToString() + " SMS", LogMessageColor.Error());
+        //  return false;
+        //}
         AddLog("Database SMS left: " + limitSMS, LogMessageColor.Information());
-        if (Convert.ToInt32(limitSMS) <= 0)
+        if (limitSMS <= 0)
         {
             AddLog("You reached database SMS Limit of SMS", LogMessageColor.Error());
             return false;
@@ -275,13 +277,12 @@ namespace SMSSpamer
 
     private void TryAutoSendMessage(string Phone, string Message)
     {
-      MySqlDB db = new MySqlDB(Properties.Default.MySqlServerUsername, Properties.Default.MySqlServerPassword, Properties.Default.MySqlServerAddress, Properties.Default.MySqlServerPort, Properties.Default.MySqlServerDatabase);
-      if (!SendMessage(Phone, Message, db))
+      if (!SendMessage(Phone, Message))
       {
         foreach (var port in modemLogic.Ports)
         {
           modemLogic.OpenPort(port);
-          if (SendMessage(Phone, Message, db))
+          if (SendMessage(Phone, Message))
           {
             Program.Exit(0);
             return;
@@ -307,7 +308,7 @@ namespace SMSSpamer
               return;
             try
             {
-              if (SendMessage(message.number, message.message, db))
+              if (SendMessage(message.number, message.message))
               {
                 AddLog("Success", LogMessageColor.Success());
                 try
@@ -362,7 +363,6 @@ namespace SMSSpamer
     {
       if (bStopped)
       {
-        var db = new MySqlDB(Properties.Default.MySqlServerUsername, Properties.Default.MySqlServerPassword, Properties.Default.MySqlServerAddress, Properties.Default.MySqlServerPort, Properties.Default.MySqlServerDatabase);
         Task.Factory.StartNew(() =>
           {
             bStopped = false;
