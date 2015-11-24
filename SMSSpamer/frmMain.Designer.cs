@@ -42,13 +42,14 @@
       this.label1 = new System.Windows.Forms.Label();
       this.splitter1 = new System.Windows.Forms.Splitter();
       this.panel2 = new System.Windows.Forms.Panel();
+      this.splitter2 = new System.Windows.Forms.Splitter();
       this.rtbLog = new System.Windows.Forms.RichTextBox();
       this.panel3 = new System.Windows.Forms.Panel();
-      this.panel4 = new System.Windows.Forms.Panel();
       this.rtbModemLog = new System.Windows.Forms.RichTextBox();
-      this.edtCommand = new System.Windows.Forms.TextBox();
+      this.panel4 = new System.Windows.Forms.Panel();
       this.btnSendCommand = new System.Windows.Forms.Button();
-      this.splitter2 = new System.Windows.Forms.Splitter();
+      this.edtCommand = new System.Windows.Forms.TextBox();
+      this.lblMessageLength = new System.Windows.Forms.Label();
       this.panel1.SuspendLayout();
       this.panel2.SuspendLayout();
       this.panel3.SuspendLayout();
@@ -57,6 +58,7 @@
       // 
       // panel1
       // 
+      this.panel1.Controls.Add(this.lblMessageLength);
       this.panel1.Controls.Add(this.btnSendFromDB);
       this.panel1.Controls.Add(this.btnSettings);
       this.panel1.Controls.Add(this.btnSend);
@@ -98,7 +100,7 @@
       // 
       this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnSend.Location = new System.Drawing.Point(10, 231);
+      this.btnSend.Location = new System.Drawing.Point(10, 235);
       this.btnSend.Name = "btnSend";
       this.btnSend.Size = new System.Drawing.Size(303, 23);
       this.btnSend.TabIndex = 6;
@@ -114,8 +116,9 @@
       this.edtMessage.Multiline = true;
       this.edtMessage.Name = "edtMessage";
       this.edtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.edtMessage.Size = new System.Drawing.Size(303, 124);
+      this.edtMessage.Size = new System.Drawing.Size(303, 101);
       this.edtMessage.TabIndex = 5;
+      this.edtMessage.TextChanged += new System.EventHandler(this.edtMessage_TextChanged);
       // 
       // edtPhoneNumber
       // 
@@ -184,6 +187,15 @@
       this.panel2.Size = new System.Drawing.Size(375, 302);
       this.panel2.TabIndex = 3;
       // 
+      // splitter2
+      // 
+      this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.splitter2.Location = new System.Drawing.Point(0, 199);
+      this.splitter2.Name = "splitter2";
+      this.splitter2.Size = new System.Drawing.Size(375, 3);
+      this.splitter2.TabIndex = 2;
+      this.splitter2.TabStop = false;
+      // 
       // rtbLog
       // 
       this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -204,16 +216,6 @@
       this.panel3.Size = new System.Drawing.Size(375, 100);
       this.panel3.TabIndex = 1;
       // 
-      // panel4
-      // 
-      this.panel4.Controls.Add(this.btnSendCommand);
-      this.panel4.Controls.Add(this.edtCommand);
-      this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.panel4.Location = new System.Drawing.Point(0, 65);
-      this.panel4.Name = "panel4";
-      this.panel4.Size = new System.Drawing.Size(375, 35);
-      this.panel4.TabIndex = 0;
-      // 
       // rtbModemLog
       // 
       this.rtbModemLog.BackColor = System.Drawing.SystemColors.ButtonFace;
@@ -225,15 +227,15 @@
       this.rtbModemLog.TabIndex = 1;
       this.rtbModemLog.Text = "";
       // 
-      // edtCommand
+      // panel4
       // 
-      this.edtCommand.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.edtCommand.Location = new System.Drawing.Point(3, 8);
-      this.edtCommand.Name = "edtCommand";
-      this.edtCommand.Size = new System.Drawing.Size(261, 20);
-      this.edtCommand.TabIndex = 0;
-      this.edtCommand.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edtCommand_KeyPress);
+      this.panel4.Controls.Add(this.btnSendCommand);
+      this.panel4.Controls.Add(this.edtCommand);
+      this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.panel4.Location = new System.Drawing.Point(0, 65);
+      this.panel4.Name = "panel4";
+      this.panel4.Size = new System.Drawing.Size(375, 35);
+      this.panel4.TabIndex = 0;
       // 
       // btnSendCommand
       // 
@@ -246,14 +248,25 @@
       this.btnSendCommand.UseVisualStyleBackColor = true;
       this.btnSendCommand.Click += new System.EventHandler(this.btnSendCommand_Click);
       // 
-      // splitter2
+      // edtCommand
       // 
-      this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.splitter2.Location = new System.Drawing.Point(0, 199);
-      this.splitter2.Name = "splitter2";
-      this.splitter2.Size = new System.Drawing.Size(375, 3);
-      this.splitter2.TabIndex = 2;
-      this.splitter2.TabStop = false;
+      this.edtCommand.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.edtCommand.Location = new System.Drawing.Point(3, 8);
+      this.edtCommand.Name = "edtCommand";
+      this.edtCommand.Size = new System.Drawing.Size(261, 20);
+      this.edtCommand.TabIndex = 0;
+      this.edtCommand.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edtCommand_KeyPress);
+      // 
+      // lblMessageLength
+      // 
+      this.lblMessageLength.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.lblMessageLength.Location = new System.Drawing.Point(7, 210);
+      this.lblMessageLength.Name = "lblMessageLength";
+      this.lblMessageLength.Size = new System.Drawing.Size(306, 15);
+      this.lblMessageLength.TabIndex = 9;
+      this.lblMessageLength.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
       // frmMain
       // 
@@ -299,7 +312,7 @@
     private System.Windows.Forms.TextBox edtCommand;
     private System.Windows.Forms.RichTextBox rtbLog;
     private System.Windows.Forms.Splitter splitter2;
-
+    private System.Windows.Forms.Label lblMessageLength;
   }
 }
 

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SMSSpamer
@@ -34,13 +27,11 @@ namespace SMSSpamer
 
     private void btnSave_Click(object sender, EventArgs e)
     {
-      bool bNeedRestart = false;
+      var bNeedRestart = false;
       if (Properties.Default.MySqlServerAddress != edtMySqlServerAddress.Text || Properties.Default.MySqlServerPort != Convert.ToInt32(edtMySqlServerPort.Text) ||
           Properties.Default.MySqlServerDatabase != edtMySqlServerDatabase.Text || Properties.Default.MySqlServerUsername != edtMySqlServerUsername.Text ||
           Properties.Default.MySqlServerPassword != edtMySqlServerPassword.Text)
-      {
         bNeedRestart = true;
-      }
       Properties.Default.MySqlServerAddress = edtMySqlServerAddress.Text;
       try
       {
@@ -92,12 +83,11 @@ namespace SMSSpamer
         return;
       }
 
-
       Properties.Default.Save();
 
       // Test MySql connection
 
-      MySqlDB db = new MySqlDB(Properties.Default.MySqlServerUsername, Properties.Default.MySqlServerPassword, Properties.Default.MySqlServerAddress, Properties.Default.MySqlServerPort, Properties.Default.MySqlServerDatabase);
+      var db = new MySqlDB(Properties.Default.MySqlServerUsername, Properties.Default.MySqlServerPassword, Properties.Default.MySqlServerAddress, Properties.Default.MySqlServerPort, Properties.Default.MySqlServerDatabase);
       try
       {
         var r = db.mySqlConnection;
