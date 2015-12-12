@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -40,14 +41,29 @@ namespace SMSSpamer
         {
           lock (thislock)
           {
+            var maxLinesCount = 1000;
+            if (rtbLog.Lines.Count() > maxLinesCount)
+            {
+              var lines = rtbLog.Lines;
+              var newLines = lines.Skip(rtbLog.Lines.Count() - maxLinesCount);
+              rtbLog.Lines = newLines.ToArray();
+            }
+
+            msg = DateTime.Now.ToShortTimeString() + " | " + msg + Environment.NewLine;
+
             var start = rtbLog.Text.Length - 1;
             if (start < 0)
               start = 0;
-            rtbLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + msg + Environment.NewLine);
+            rtbLog.AppendText(msg);
             rtbLog.Select(start, rtbLog.Text.Length - start + 1);
             rtbLog.SelectionColor = msgColor;
             rtbLog.SelectionStart = rtbLog.Text.Length;
             rtbLog.ScrollToCaret();
+
+            using (var file = new StreamWriter(AppDomain.CurrentDomain.FriendlyName + ".log", true))
+            {
+              file.WriteLine(msg);
+            }
           }
         }
         catch (Exception ex)
@@ -67,11 +83,28 @@ namespace SMSSpamer
         {
           lock (thislock)
           {
+            var maxLinesCount = 1000;
+            if (rtbModemLog.Lines.Count() > maxLinesCount)
+            {
+              var lines = rtbModemLog.Lines;
+              var newLines = lines.Skip(rtbModemLog.Lines.Count() - maxLinesCount);
+              rtbModemLog.Lines = newLines.ToArray();
+            }
+
+            var msg = string.Empty;
+
             if (request != null)
-              rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Request: " + request + Environment.NewLine + Environment.NewLine);
+              msg += DateTime.Now.ToShortTimeString() + " | " + " Request: " + request + Environment.NewLine + Environment.NewLine;
             if (responce != null)
-              rtbModemLog.AppendText(DateTime.Now.ToShortTimeString() + " | " + " Responce: " + responce + Environment.NewLine + Environment.NewLine);
+              msg += DateTime.Now.ToShortTimeString() + " | " + " Responce: " + responce + Environment.NewLine + Environment.NewLine;
+
+            rtbModemLog.AppendText(msg);
             rtbModemLog.ScrollToCaret();
+
+            using (var file = new StreamWriter(AppDomain.CurrentDomain.FriendlyName + ".Modem.log", true))
+            {
+              file.WriteLine(msg);
+            }
           }
         }
         catch (Exception ex)
